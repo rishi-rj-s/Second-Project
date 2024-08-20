@@ -1,0 +1,234 @@
+<%- include('../../partials/userHeader') %>
+
+    <head>
+        <style>
+            .gradient-custom {
+                /* fallback for old browsers */
+                background: #f6d365;
+
+                /* Chrome 10-25, Safari 5.1-6 */
+                background: -webkit-linear-gradient(to right bottom, rgba(246, 211, 101, 1), rgba(253, 160, 133, 1));
+
+                /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+                background: linear-gradient(to right bottom, rgba(246, 211, 101, 1), rgba(253, 160, 133, 1))
+            }
+
+            h6 {
+                margin-top: 50px;
+            }
+        </style>
+    </head>
+
+    <div class="bg-primary">
+        <div class="container py-4">
+            <!-- Breadcrumb -->
+            <nav class="d-flex">
+                <h5 class="mb-0">
+                    <a href="" class="text-white-50">Home</a>
+                    <span class="text-white-50 mx-2"> > </span>
+                    <a href="" class="text-white-50">Profile</a>
+                </h5>
+            </nav>
+            <!-- Breadcrumb -->
+        </div>
+    </div>
+
+    <section class="pt-3 shadow-lg"> <!-- Added shadow-lg class for a larger shadow -->
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3 px-3">
+                    <div class="account-nav rounded shadow bg-white p-4">
+                        <div class="text-center mb-4">
+                            <h4 class="mb-0">Hi <%= user.name %></h4>
+                            <p class="text-muted">Your personal dashboard</p>
+                        </div>
+                        <div class="text-center my-3">
+                            <a class="nav-link" href="/user/viewCart">
+                                <i class="fa-solid fa-wallet me-1"></i>Wallet Amount: <%= user.wallet.toFixed(2) %>
+                            </a>
+                        </div>
+                        <hr>
+                        <button class="btn btn-primary w-100" type="button" data-bs-toggle="collapse" data-bs-target="#navCollapse" aria-expanded="false" aria-controls="navCollapse">
+                            Menu
+                        </button>
+                        <div class="collapse mt-3" id="navCollapse">
+                            <ul class="list-unstyled mb-0">
+                                <li>
+                                    <a href="/user/profile" class="text-decoration-none text-primary d-block py-2">
+                                        <button class="btn btn-secondary w-100">Profile</button>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="/user/address" class="text-decoration-none text-dark d-block py-2">
+                                        <button class="btn btn-primary w-100">Address</button>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="/user/orders" class="text-decoration-none text-dark d-block py-2">
+                                        <button class="btn btn-secondary w-100">My Orders</button>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="/user/viewWishlist" class="text-decoration-none text-dark d-block py-2">
+                                        <button class="btn btn-secondary w-100">My Wishlist</button>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="/user/wallethistory" class="text-decoration-none text-dark d-block py-2">
+                                        <button class="btn btn-secondary w-100">Wallet History</button>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="/user/forgot" class="text-decoration-none text-dark d-block py-2">
+                                        <button class="btn btn-secondary w-100">Change Password</button>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <div class="col-lg-9 px-3">
+                    <form class="my-5" id="formSubmit">
+
+                        <div data-mdb-input-init class="form-outline mb-4">
+                            <input type="hidden" id="formId" name="addressId" value="<%= address._id %>">
+                        </div>
+
+                        <!-- Name input -->
+                        <div data-mdb-input-init class="form-outline mb-4">
+                            <input type="text" id="formName" name="name" class="form-control" required  value="<%= name %>"/>
+                            <label class="form-label" for="formName">Name</label>
+                        </div>
+
+                        <!-- Mobile Number input -->
+                        <div data-mdb-input-init class="form-outline mb-4">
+                            <input type="text" id="formMobileNumber" name="mobileNumber" class="form-control"
+                                required value="<%= mobileNumber %>"/>
+                            <label class="form-label" for="formMobileNumber">Mobile Number</label>
+                        </div>
+
+                        <!-- Pincode input -->
+                        <div data-mdb-input-init class="form-outline mb-4">
+                            <input type="text" id="formPincode" name="pincode" class="form-control" required value="<%= pincode %>"/>
+                            <label class="form-label" for="formPincode">Pincode</label>
+                        </div>
+
+                        <!-- Locality input -->
+                        <div data-mdb-input-init class="form-outline mb-4">
+                            <input type="text" id="formLocality" name="locality" class="form-control" required value="<%= name %>"locality/>
+                            <label class="form-label" for="formLocality">Locality</label>
+                        </div>
+
+                        <!-- Address input -->
+                        <div data-mdb-input-init class="form-outline mb-4">
+                            <input type="text" id="formAddress" name="address" class="form-control" required value="<%= address %>"/>
+                            <label class="form-label" for="formAddress">Address</label>
+                        </div>
+
+                        <!-- District input -->
+                        <div data-mdb-input-init class="form-outline mb-4">
+                            <input type="text" id="formDistrict" name="district" class="distrit form-control" required value="<%= district %>"/>
+                            <label class="form-label" for="formDistrict">District</label>
+                        </div>
+
+                        <!-- State input -->
+                        <div data-mdb-input-init class="form-outline mb-4">
+                            <input type="text" id="formState" name="state" class="form-control" required value="<%= state %>"/>
+                            <label class="form-label" for="formState">State</label>
+                        </div>
+
+                        <!-- Landmark input -->
+                        <div data-mdb-input-init class="form-outline mb-4">
+                            <input type="text" id="formLandmark" name="landmark" class="form-control" value="<%= landmark %>"/>
+                            <label class="form-label" for="formLandmark">Landmark</label>
+                        </div>
+
+                        <!-- Alternate Mobile Number input -->
+                        <div data-mdb-input-init class="form-outline mb-4">
+                            <input type="text" id="formAlternateMobile" name="alternateMobile" class="form-control" value="<%= alternateMobile %>"/>
+                            <label class="form-label" for="formAlternateMobile">Alternate Mobile
+                                Number</label>
+                        </div>
+
+                        <!-- Submit button -->
+                        <button data-mdb-ripple-init type="submit" class="btn btn-primary btn-block mb-4">Update Address
+                            Address</button>
+                    </form>
+
+                </div>
+
+
+    </section>
+    <script>
+        document.getElementById('formSubmit').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            try {
+                const addressId = document.getElementById('formId').value;
+                const name = document.getElementById('formName').value;
+                const mobileNumber = document.getElementById('formMobileNumber').value;
+                const pincode = document.getElementById('formPincode').value;
+                const locality = document.getElementById('formLocality').value;
+                const address = document.getElementById('formAddress').value;
+                const district = document.getElementById('formDistrict').value;
+                const state = document.getElementById('formState').value;
+                const landmark = document.getElementById('formLandmark').value;
+                const alternateMobile = document.getElementById('formAlternateMobile').value;
+    
+                const response = await fetch('/user/updateAddress', {
+                    method: "PATCH",
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        addressId,
+                        name,
+                        mobileNumber,
+                        pincode,
+                        locality,
+                        address,
+                        district,
+                        state,
+                        landmark,
+                        alternateMobile
+                    })
+                });
+    
+                if (response.ok) {
+                    // Show success alert and redirect
+                    Swal.fire({
+                        title: 'Success!',
+                        text: 'Address updated successfully',
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = '/user/address';
+                        }
+                    });
+                } else {
+                    // Show error alert
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'Failed to update address',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            } catch (e) {
+                console.log(e);
+                // Show error alert
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'An error occurred',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            }
+        });
+    </script>
+    
+
+    <%- include('../../partials/footer') %>

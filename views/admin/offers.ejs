@@ -1,0 +1,223 @@
+<%- include('../partials/adminHeader') %>
+
+
+    <!-- main -->
+
+    <main class="container d-flex flex-wrap g-5">
+        <div class="col-md-3 mb-3 border border-rounded border-left-0">
+            <h3 class="text-center">Admin</h3>
+            <ul class="nav nav-pills flex-column">
+                <li class="nav-item mt-2">
+                    <a class="nav-link" href="/">Dashboard</a>
+                </li>
+                <li class="nav-item mt-2">
+                    <a class="nav-link" href="/admin/category">Category</a>
+                </li>
+                <li class="nav-item mt-2">
+                    <a class="nav-link" href="/admin/products">Products</a>
+                </li>
+                <li class="nav-item mt-2">
+                    <a class="nav-link" href="/admin/users">Manage Users</a>
+                </li>
+                <li class="nav-item mt-2">
+                    <a class="nav-link" href="admin/">Coupons</a>
+                </li>
+                <li class="nav-item mt-2">
+                    <a class="nav-link active" href="admin/offers">Offers</a>
+                </li>
+                <li class="nav-item mt-2">
+                    <a class="nav-link" href="/admin/manageOrders">Orders</a>
+                </li>
+                <li class="nav-item mt-2 mt-2">
+                    <a class="nav-link border border-danger bg-danger text-white text-center"
+                        href="/admin/logout">Logout</a>
+                </li>
+            </ul>
+        </div>
+        <div class="col-md-9 border justify-content-center d-flex ">
+            <div class="container-fluid mt-0">
+                <div class="container">
+                    <h2 class="text-center mb-4">Apply Offers</h2>
+                    <div class="form-container">
+                        <form id="offerForm">
+                            <div class="form-group">
+                                <label class="my-3 mx-5" for="offerType">Select Offer Type:</label>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="offerType" id="option1Radio"
+                                        value="products" required>
+                                    <label class="form-check-label" for="products">Products</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="offerType" id="option2Radio"
+                                        value="categories" required>
+                                    <label class="form-check-label" for="categories">Categories</label>
+                                </div>
+
+                                <div><br>
+
+                                    <div id="option1Dropdown" style="display: none;" class="mb-3">
+                                        <label for="dropdown1">Select the Product:</label>
+                                        <select id="dropdown1" name="dropdown1">
+                                            <% productData.forEach(function(value) { %>
+                                                <option value="<%= value._id %>">Name : <%= value.name %> Category : <%=
+                                                            value.category.name %>
+                                                </option>
+                                                <% }); %>
+                                        </select>
+                                    </div>
+
+                                    <div id="option2Dropdown" style="display: none;" class="mb-3">
+                                        <label for="dropdown2">Select for Option 2:</label>
+                                        <select id="dropdown2" name="dropdown2">
+                                            <% categoryData.forEach(function(value) { %>
+                                                <option value="<%= value._id %>">Category <%= value.name %>
+                                                </option>
+                                                <% }); %>
+                                        </select>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="mb-3" for="discount">Discount Percentage:</label>
+                                <input type="number" class="form-control" id="discount" name="discount" min="0" max="99"
+                                    required>
+                            </div>
+                            <div class="div justify-content-center d-flex my-3">
+                                <button type="submit" class="btn btn-primary btn-block">Submit</button>
+                            </div>
+
+                        </form>
+                    </div>
+
+                    <h3 class="mt-5">Active Offers</h3>
+                    <table class="table table-bordered mt-3">
+                        <thead>
+                            <tr>
+                                <th>Offer Product</th>
+                                <th>Discount Percentage</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="activeOffers">
+                            <!-- Active offers will be dynamically added here -->
+                            <% if(productOffers.length==0) {%>
+                                <tr>
+                                    <th>No Active Offers </th>
+                                    <th>Nil</th>
+                                    <th>Nil</th>
+                                </tr>
+                                <% }else{ %>
+                                    <% productOffers.forEach(product=> { %>
+                                        <tr>
+                                            <th>
+                                                <%= product.name %>
+                                            </th>
+                                            <th>
+                                                <%= product.offerPercentage %>
+                                            </th>
+                                            <th class="justify-content-center d-flex">
+                                                <button><a href="/admin/deleteOffer/<%= product._id %>"><i
+                                                            class="bi bi-trash"></i></a></button>
+                                            </th>
+                                        </tr>
+                                        <% }) %>
+                                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+    </main>
+
+    </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const message = urlParams.get('msg');
+        console.log(message);
+        
+        // Display the SweetAlert2 message if it exists
+        if (message === 'success') {
+            Swal.fire({
+                title: 'Success!',
+                text: 'Offer deleted successfully', 
+                icon: 'success',
+                confirmButtonText: 'OK'
+            }).then(() => {
+                // Remove the msg parameter from the URL after SweetAlert is closed
+                history.replaceState(null, '', window.location.pathname);
+                window.reload()
+            });
+        }
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+
+            document.getElementById('option1Radio').addEventListener('change', function () {
+                document.getElementById('option1Dropdown').style.display = 'block';
+                document.getElementById('option2Dropdown').style.display = 'none';
+            });
+
+            document.getElementById('option2Radio').addEventListener('change', function () {
+                document.getElementById('option1Dropdown').style.display = 'none';
+                document.getElementById('option2Dropdown').style.display = 'block';
+            });
+
+            document.getElementById('offerForm').addEventListener('submit', function (event) {
+                event.preventDefault();
+                let selectedRadio = document.querySelector('input[name="offerType"]:checked').value;
+
+                let selectedDropdown = selectedRadio === 'products' ? document.getElementById('dropdown1').value : document.getElementById('dropdown2').value;
+
+                const discount = document.getElementById('discount').value
+
+                axios.post("/admin/updateOffers", {
+                    offerType: selectedRadio,
+                    elementId: selectedDropdown,
+                    discount
+                })
+                    .then(async () => {
+                            await Swal.fire({
+                                title: 'Success!',
+                                text: 'Offer applied successfully.',
+                                icon: 'success',
+                                confirmButtonText: 'OK'
+                            })
+                                .then(() => {
+                                    window.location.reload();
+                                    // Reload the page
+                                })
+                    }).catch((e) => {
+                        console.log(e)
+                    })
+
+            });
+        })
+
+    </script>
+
+    <!-- <script>
+        document.getElementById('offerForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const offerType = document.querySelector('input[name="offerType"]:checked').value;
+            const discount = document.getElementById('discount').value;
+
+            const table = document.getElementById('activeOffers');
+            const row = table.insertRow();
+            const cell1 = row.insertCell(0);
+            const cell2 = row.insertCell(1);
+
+            cell1.textContent = offerType.charAt(0).toUpperCase() + offerType.slice(1);
+            cell2.textContent = discount + '%';
+
+            document.getElementById('offerForm').reset();
+        });
+    </script> -->
+
+    <%- include('../partials/footer') %>

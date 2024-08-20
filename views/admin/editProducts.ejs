@@ -1,0 +1,132 @@
+<%- include('../partials/adminHeader') %>
+
+    <!-- main -->
+
+    <main class="container d-flex flex-wrap p-5 g-5">
+        <div class="col-md-3 mb-3 border border-rounded border-left-0">
+            <h3 class="text-center">Admin</h3>
+            <ul class="nav nav-pills flex-column">
+                <li class="nav-item">
+                    <a class="nav-link " href="/">Dashboard</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link " href="/admin/category">Category</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/admin/products">Products</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/admin/users">Manage Users</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#admin/">Coupons</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/admin/manageOrders">Orders</a>
+                  </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/admin/logout">Logout</a>
+                </li>
+            </ul>
+        </div>
+        <div class="col-md-9">
+            <div class="container ">
+                <div class="m-5 p-5 d-flex justify-content-center border border-secondary rounded">
+                    <form class="row g-3" id="updateForm">
+                        <h3 class="text-center">Update Products!</h3>
+                        <input type="hidden" id="formId" value="<%= data._id %>" name="id">
+                        <div class="col-md-12">
+                            <label for="formName" class="form-label">Name</label>
+                            <input class="form-control" value="<%= data.name %>" id="formName" required name="name">
+                        </div>
+                        <div class="form-group">
+                            <label for="formDescription">Description</label>
+                            <textarea class="form-control" id="formDescription" rows="3" required name="description"><%= data.description %></textarea>
+                        </div>
+                        <div class="col-md-12">
+                            <label for="formRating" class="form-label">Rating</label>
+                            <input class="form-control" value="<%= data.rating %>" id="formRating" required name="rating">
+                        </div>
+                        <div class="col-md-12">
+                            <label for="formRate" class="form-label">Rate</label>
+                            <input type="text" value="<%= data.rate %>" class="form-control" id="formRate" required name="rate">
+                        </div>
+                        <div class="form-check my-3 p-0">
+                            <label for="formCategory" class="form-label">Category</label>
+                            <select class="form-select" id="formCategory" name="category">
+                                <% categories.forEach(category => { %>
+                                    <option value="<%= category._id %>" <%= String(category._id) === String(data.category._id) ? 'selected' : '' %>>
+                                        <%= category.name %>
+                                    </option>
+                                <% }); %>
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-primary w-100">Update Products</button>
+                        </div>
+                    </form>
+                    
+    </main>
+
+    <script>
+        document.getElementById('updateForm').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            try {
+                const id = document.getElementById('formId').value;
+                const name = document.getElementById('formName').value;
+                const description = document.getElementById('formDescription').value;
+                const rating = document.getElementById('formRating').value;
+                const rate = document.getElementById('formRate').value;
+                const category = document.getElementById('formCategory').value;
+    
+                const response = await fetch('/admin/editProduct', {
+                    method: "PATCH",
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        id,
+                        name,
+                        description,
+                        rating,
+                        rate,
+                        category
+                    })
+                });
+    
+                if (response.ok) {
+                    // Show success alert and redirect
+                    Swal.fire({
+                        title: 'Success!',
+                        text: 'Product updated successfully',
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = '/admin/products';
+                        }
+                    });
+                } else {
+                    // Show error alert
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'Failed to update product',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            } catch (e) {
+                console.log(e);
+                // Show error alert
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'An error occurred',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            }
+        });
+    </script>
+    
+    
+    <%- include('../partials/footer') %>

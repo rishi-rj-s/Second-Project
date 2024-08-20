@@ -1,0 +1,110 @@
+<%- include('../partials/adminHeader') %>
+
+  <!-- main -->
+
+  <main class="container d-flex flex-wrap p-5 g-5">
+    <div class="col-md-3 mb-3 border border-rounded border-left-0">
+      <h3 class="text-center">Admin</h3>
+      <ul class="nav nav-pills flex-column">
+        <li class="nav-item">
+          <a class="nav-link " href="/">Dashboard</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/admin/category">Category</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link " href="/admin/products">Products</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" href="/admin/users">Manage Users</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#admin/">Coupons</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/admin/manageOrders">Orders</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/admin/logout">Logout</a>
+        </li>
+      </ul>
+    </div>
+    <div class="col-md-9 justify-content-center d-flex mt-5">
+      <div class="row">
+        <div class="col-md-12 d-flex justify-content-between align-items-center mt-5">
+          <h3 class="mx-5">Manage Users</h3>
+        </div>
+
+        <div class="col-md-12 justify-content-center d-flex mt-5">
+          <table class="table align-middle mb-0 bg-white">
+            <thead class="bg-light">
+              <tr>
+                <th>Name</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% data.forEach(user=> { %>
+                <tr>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <img src="https://mdbootstrap.com/img/new/avatars/8.jpg" alt="" style="width: 45px; height: 45px"
+                        class="rounded-circle" />
+                      <div class="ms-3">
+                        <p class="fw-bold mb-1">
+                          <%= user.name %>
+                        </p>
+                        <p class="text-muted mb-0">
+                          <%= user.email %>
+                        </p>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="badge badge-success rounded-pill d-inline text-black border border-dark">
+                      <% if (user.status) { %>
+                        Active
+                        <% } else { %>
+                          Blocked
+                          <% } %>
+                    </span>
+                  </td>
+                  <td>
+                    <button class="btn btn-primary" onclick="toggleUser('<%= user._id %>')">Toggle User</button>
+                  </td>
+                </tr>
+                <% }) %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    async function toggleUser(userId) {
+      try {
+        const response = await fetch(`/admin/usertoggle/${userId}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+
+        const data = await response.json();
+        // Reload the page upon successful status change
+        location.reload();
+      } catch (error) {
+        console.error('Error toggling user status:', error);
+      }
+    }
+  </script>
+
+
+
+  <%- include('../partials/footer') %>

@@ -1,0 +1,436 @@
+<%- include('../partials/userHeader') %>
+
+  <style>
+    .image-container {
+      position: relative;
+      overflow: hidden;
+      height: 400px;
+      /* Set a fixed height for the image container */
+    }
+
+    .image-container img {
+      display: block;
+      height: 100%;
+      /* Make sure the image height fits the container */
+      width: auto;
+      /* Maintain the aspect ratio */
+      object-fit: contain;
+      /* Ensure the entire image fits within the container */
+    }
+
+    .zoom-lens {
+      position: absolute;
+      border: 2px solid #000;
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background-repeat: no-repeat;
+      background-size: 200% 200%;
+      background-position: center;
+      display: none;
+      pointer-events: none;
+    }
+
+    .image-container:hover .zoom-lens {
+      display: block;
+    }
+  </style>
+
+  <div class="bg-primary">
+    <div class="container py-4">
+      <!-- Breadcrumb -->
+      <nav class="d-flex">
+        <h6 class="mb-0">
+          <a href="" class="text-white-50">Home</a>
+          <span class="text-white-50 mx-2"> > </span>
+          <a href="/user/category" class="text-white-50">Menu</a>
+          <span class="text-white-50 mx-2"> > </span>
+          <span class="text-white">Dress</span>
+        </h6>
+      </nav>
+      <!-- Breadcrumb -->
+    </div>
+  </div>
+  <!-- Heading-->
+
+
+  <section class="py-5">
+    <div class="container">
+      <div class="row gx-5">
+        <aside class="col-lg-6">
+          <div id="carouselExampleCaptions" class="carousel slide border rounded-4 mb-3">
+            <div class="carousel-inner">
+              <% data.images.forEach((image, index)=> { %>
+                <div class="carousel-item <%= index === 0 ? 'active' : '' %>">
+                  <div class="image-container">
+                    <img class="d-block w-100" src="/<%= image %>" />
+                    <div class="zoom-lens"></div>
+                  </div>
+                </div>
+                <% }) %>
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions"
+              data-bs-slide="prev">
+              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions"
+              data-bs-slide="next">
+              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Next</span>
+            </button>
+          </div>
+          <div class="d-flex justify-content-center mb-3">
+            <% data.images.forEach((image, index)=> { %>
+              <a class="border mx-1 rounded-2 item-thumb" href="javascript:void(0)" data-image-index="<%= index %>">
+                <img width="60" height="60" class="rounded-2" src="/<%= image %>" />
+              </a>
+              <% }) %>
+          </div>
+        </aside>
+        <main class="col-lg-6">
+          <div class="ps-lg-3">
+            <h4 class="title text-dark">
+              <%= data.name %>
+            </h4>
+            <div class="d-flex flex-row my-3">
+              <div class="text-warning mb-1 me-2">
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fas fa-star-half-alt"></i>
+                <span class="ms-1">
+                  Rating : <%= data.rating %>
+                </span>
+              </div>
+            </div>
+            <div class="mb-3">
+              <span class="h5">Price: <%= data.rate %></span>
+            </div>
+
+            <p>
+              Description : <%= data.description %>
+            </p>
+
+            <div class="row">
+              <dt class="col-3">Categories :</dt>
+              <dd class="col-9">
+                <%= data.category.name %>
+              </dd>
+
+              <dt class="col-3">Type</dt>
+              <dd class="col-9">Food</dd>
+
+              <dt class="col-3">Non Veg</dt>
+              <dd class="col-9">Contains beef, chicken, pork</dd>
+
+              <dt class="col-3">Brand</dt>
+              <dd class="col-9">Rishi Studio</dd>
+            </div>
+
+            <hr />
+
+            <div class="row mb-4">
+              <div class="col-md-4 col-6">
+                <label class="mb-2">Size</label>
+                <select class="form-select border border-secondary" style="height: 35px;">
+                  <option>Small</option>
+                  <option>Medium</option>
+                  <option>Large</option>
+                </select>
+              </div>
+              <!-- col.// -->
+              <div class="col-md-4 col-6 mb-3">
+                <label class="mb-2 d-block">Quantity</label>
+                <div class="input-group mb-3" style="width: 170px;">
+                  <button class="btn btn-white border border-secondary px-3" type="button" id="button-addon1"
+                    data-mdb-ripple-color="dark">
+                    <i class="fas fa-minus"></i>
+                  </button>
+                  <input type="number" class="form-control text-center border quantity border-secondary"
+                    id="quantityInput" placeholder="1" aria-label="Example text with button addon"
+                    aria-describedby="button-addon1" min="1" max="5" value="1" disabled />
+                  <button class="btn btn-white border border-secondary px-3" type="button" id="button-addon2"
+                    data-mdb-ripple-color="dark">
+                    <i class="fas fa-plus"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <button id="wishListButton" class="btn btn-danger" onclick="addToWishList()" data-id="<%= data._id %>"> <i
+                class="bi bi-heart"></i> Add to Wishlist </button>
+            <button class="btn btn-primary  addToCart" onclick="addToCart()" data-id="<%= data._id %>"> <i
+                class="me-1 fa fa-shopping-basket"></i> Add to cart </button>
+          </div>
+        </main>
+      </div>
+    </div>
+  </section>
+
+  <% if (similar.length> 0) { %>
+    <section class="bg-light border-top py-4">
+      <div class="container">
+        <div class="row gx-4">
+          <!-- Related Products -->
+          <div class="col-lg-12 col-md-10">
+            <div class="px-0 border rounded-2 shadow-0">
+              <div class="card">
+                <div class="card-body">
+                  <h5 class="card-title text-center">Similar items</h5>
+                  <div class="row row-cols-1 row-cols-md-4 g-4 justify-content-center">
+                    <!-- Each product as a column in a row -->
+                    <% similar.forEach(product=> { %>
+                      <div class="col d-flex justify-content-center">
+                        <div class="d-flex flex-column align-items-center">
+                          <a href="/user/productDetailed/<%= product._id %>" class="mb-3">
+                            <img src="/<%= product.images[0] %>" alt="<%= product.name %>"
+                              style="min-width: 96px; height: 96px;" class="img-md img-thumbnail" />
+                          </a>
+                          <div class="info text-center">
+                            <a href="#" class="nav-link mb-1">
+                              <%= product.name %> <br />
+                                <%= product.description %>
+                            </a>
+                            <strong class="text-dark"> Rs. <%= product.rate %></strong>
+                          </div>
+                        </div>
+                      </div>
+                      <% }); %>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <% } %>
+
+
+      <script>
+        document.addEventListener('DOMContentLoaded', function () {
+          const carousel = document.querySelector('#carouselExampleCaptions');
+          const carouselInstance = new bootstrap.Carousel(carousel);
+          const images = document.querySelectorAll('.carousel-item img');
+          const lenses = document.querySelectorAll('.zoom-lens');
+
+          // Thumbnail click functionality
+          document.querySelectorAll('.item-thumb').forEach(thumbnail => {
+            thumbnail.addEventListener('click', function () {
+              const index = this.getAttribute('data-image-index');
+              carouselInstance.to(parseInt(index));
+            });
+          });
+        }); 
+      </script>
+
+      <!-- zoom-lens -->
+      <script>
+        document.addEventListener('DOMContentLoaded', function () {
+          const images = document.querySelectorAll('.carousel-item img');
+          const lenses = document.querySelectorAll('.zoom-lens');
+
+          images.forEach((img, i) => {
+            const lens = lenses[i];
+
+            img.addEventListener('mousemove', (e) => {
+              const rect = img.getBoundingClientRect();
+              const x = e.clientX - rect.left;
+              const y = e.clientY - rect.top;
+
+              const lensX = Math.max(0, Math.min(rect.width - lens.offsetWidth, x - (lens.offsetWidth / 2)));
+              const lensY = Math.max(0, Math.min(rect.height - lens.offsetHeight, y - (lens.offsetHeight / 2)));
+
+              // Calculate the background size based on the zoom factor
+              const zoomFactor = 2; // Adjust this factor for different zoom levels
+              const backgroundSizeX = rect.width * zoomFactor;
+              const backgroundSizeY = rect.height * zoomFactor;
+
+              // Calculate the background position for the lens
+              const backgroundPosX = (lensX / rect.width) * (backgroundSizeX - lens.offsetWidth);
+              const backgroundPosY = (lensY / rect.height) * (backgroundSizeY - lens.offsetHeight);
+
+              lens.style.left = `${lensX}px`;
+              lens.style.top = `${lensY}px`;
+              lens.style.backgroundImage = `url('${img.src}')`;
+              lens.style.backgroundSize = `${backgroundSizeX}px ${backgroundSizeY}px`;
+              lens.style.backgroundPosition = `-${backgroundPosX}px -${backgroundPosY}px`;
+            });
+
+            img.addEventListener('mouseleave', () => {
+              lens.style.display = 'none';
+            });
+
+            img.addEventListener('mouseenter', () => {
+              lens.style.display = 'block';
+            });
+          });
+        });
+      </script>
+
+
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+      <script>
+        const tabs = document.querySelectorAll('.nav-link');
+        tabs.forEach((tab, index) => {
+          tab.addEventListener('click', () => {
+            tabs.forEach(tab => tab.classList.remove('active'));
+            tab.classList.add('active');
+
+            const tabContents = document.querySelectorAll('.tab-pane');
+            tabContents.forEach(content => content.classList.remove('show', 'active'));
+            tabContents[index].classList.add('show', 'active');
+          });
+        });
+
+
+        async function addToCart() {
+          try {
+            const button = document.querySelector(".addToCart");
+            const quantity = document.querySelector('.quantity').value;
+            const productId = button.getAttribute('data-id');
+            const response = await fetch(`/user/addToCart?qty=${quantity}`, {
+              method: "POST", headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({ id: productId })
+            })
+
+            const data = await response.json();
+
+            if (data.message === "success") {
+              Swal.fire({
+                icon: 'success',
+                title: 'Product Added!',
+                text: 'The product has been added to your cart.'
+              });
+            } else if (data.message === "excess") {
+              Swal.fire({
+                icon: 'Only 5 quantity allowed, 5 quantity is in cart',
+                title: 'Quantity Limit Reached',
+                text: 'You have reached the maximum quantity for this product.'
+              });
+            } else if (data.message === 'nouser') {
+              Swal.fire({
+                icon: 'info',
+                title: 'Not Logged In',
+                text: 'Please log in to add products to your cart.',
+                showCancelButton: true,
+                confirmButtonText: 'OK',
+                cancelButtonText: 'Cancel',
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  window.location.href = '/user/login';
+                }
+              });
+            } else {
+              Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: data.message || 'An error occurred while adding the product to your cart.'
+              });
+            }
+          } catch (error) {
+            console.error('Fetch Error:', error);
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: 'An error occurred while processing your request.'
+            })
+          }
+        }
+
+
+        async function addToWishList() {
+          const button = document.getElementById('wishListButton')
+          const productId = button.getAttribute('data-id')
+
+          const response = await fetch('/user/addToWishList', {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ productId })
+          })
+
+          const result = await response.json()
+
+          if (result.message == "added") {
+            Swal.fire({
+              icon: 'success',
+              title: 'Product Added!',
+              text: 'The product has been added to your Wishlist.'
+            });
+          } else if (result.message == "exists") {
+            Swal.fire({
+              icon: 'warning',
+              title: 'Product already Exists!',
+              text: 'The product has been added to your Wishlist already.'
+            });
+          }
+          else if (result.message == "exists") {
+            Swal.fire({
+              icon: 'warning',
+              title: 'Product already Exists!',
+              text: 'The product has been added to your Wishlist already.'
+            });
+          } else if (result.message == "nouser") {
+            Swal.fire({
+              icon: 'warning',
+              title: 'Not Logged In!',
+              text: 'You need to be logged in to add products to your Wishlist.',
+              showCancelButton: true,
+              confirmButtonText: 'Login',
+              cancelButtonText: 'Cancel'
+            }).then((result) => {
+              if (result.isConfirmed) {
+                window.location.href = '/user/login';
+              }
+            });
+          }
+        }
+
+
+        document.addEventListener("DOMContentLoaded", function () {
+          const minusButton = document.getElementById('button-addon1');
+          const plusButton = document.getElementById('button-addon2');
+          const quantityInput = document.getElementById('quantityInput');
+
+          // Function to handle quantity change
+          function updateQuantity(change) {
+            let currentQuantity = parseInt(quantityInput.value);
+            if (isNaN(currentQuantity)) {
+              currentQuantity = 1;
+            }
+
+            const newQuantity = currentQuantity + change;
+            if (newQuantity >= 1 && newQuantity <= 5) {
+              quantityInput.value = newQuantity;
+            }
+          }
+
+          // Event listeners for buttons
+          minusButton.addEventListener('click', function () {
+            updateQuantity(-1);
+          });
+
+          plusButton.addEventListener('click', function () {
+            updateQuantity(1);
+          });
+
+          // Ensure the value is within range when manually inputting
+          quantityInput.addEventListener('input', function () {
+            let currentQuantity = parseInt(quantityInput.value);
+            if (currentQuantity < 1) {
+              quantityInput.value = 1;
+            } else if (currentQuantity > 5) {
+              quantityInput.value = 5;
+            }
+          });
+        });
+      </script>
+
+      <%- include('../partials/footer') %>

@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.6.0/dist/sweetalert2.all.min.js"></script>
+  <title>Rishi Studio</title>
+  <style>
+    .card {
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      /* Light shadow for better visibility */
+    }
+
+    .btn {
+      border-radius: 0.5rem;
+      /* Rounded corners */
+      font-weight: 600;
+      /* Bold text */
+    }
+
+    .btn-dark {
+      background-color: #343a40;
+      /* Dark background */
+      color: #ffffff;
+      /* White text */
+      border: none;
+    }
+
+    .btn-outline-info {
+      color: #17a2b8;
+      /* Info color */
+      border-color: #17a2b8;
+      /* Border color */
+    }
+
+    .btn-outline-info i {
+      color: #17a2b8;
+      /* Google icon color */
+    }
+
+    .btn-outline-danger {
+      color: #dc3545;
+      /* Danger color */
+      border-color: #dc3545;
+      /* Border color */
+    }
+
+    .btn-lg {
+      font-size: 1.125rem;
+      /* Larger text size */
+      padding: 0.5rem 1.25rem;
+      /* Larger padding */
+    }
+
+    .btn-block,
+    .w-100 {
+      width: 100%;
+      /* Full width */
+    }
+
+    .btn:hover {
+      opacity: 0.9;
+      /* Slightly transparent on hover */
+    }
+
+    .btn-outline-info:hover {
+      background-color: #17a2b8;
+      /* Background color on hover */
+      color: #ffffff;
+      /* Text color on hover */
+    }
+
+    .btn-outline-info:hover i {
+      color: #ffffff;
+      /* Icon color on hover */
+    }
+
+    .btn-outline-danger:hover {
+      background-color: #dc3545;
+      /* Background color on hover */
+      color: #ffffff;
+      /* Text color on hover */
+    }
+
+    .small {
+      font-size: 0.875rem;
+      /* Smaller text for auxiliary links */
+    }
+
+    .text-primary {
+      color: #007bff;
+      /* Bootstrap primary color */
+    }
+
+    .text-muted {
+      color: #6c757d;
+      /* Bootstrap muted color */
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/public/img/icon.jpg">
+</head>
+
+<body>
+
+  <!-- nav -->
+
+  <header>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="/">
+          <em>
+            <h2><i class="bi bi-gem pe-2"></i>RISHI STUDIO</h2>
+          </em>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
+          aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNavDropdown">
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="/"><i class="bi bi-house"></i> Home</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <!-- Login Section -->
+    <div class="container">
+      <section class="min-vh-100 d-flex align-items-center">
+        <div class="container py-5 h-100">
+          <div class="row d-flex justify-content-center align-items-center">
+            <div class="col col-xl-10">
+              <div class="card" style="border-radius: 1rem;">
+                <div class="row g-0">
+                  <div class="col-md-6 col-lg-5 d-none d-md-block">
+                    <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/img1.webp"
+                      alt="login form" class="img-fluid" style="border-radius: 1rem 0 0 1rem;" />
+                  </div>
+                  <div class="col-md-6 col-lg-7 d-flex align-items-center">
+                    <div class="card-body p-4 p-lg-5 text-black">
+                      <form action="/user/api_login" method="POST" onsubmit="return validateForm()">
+                        <div class="d-flex align-items-center mb-3 pb-1">
+                          <i class="fas fa-cubes fa-2x me-3" style="color: #ff6219;"></i>
+                          <span class="h1 fw-bold mb-0">Login !</span>
+                        </div>
+                        <h5 class="fw-normal mb-3 pb-3" style="letter-spacing: 1px;">Sign into your account</h5>
+                        <div data-mdb-input-init class="form-outline mb-4">
+                          <input type="email" name="email" id="form2Example17"
+                            class="form-control form-control-lg emailAdd" />
+                          <label class="form-label" for="form2Example17">Email address</label>
+                        </div>
+                        <div data-mdb-input-init class="form-outline mb-4">
+                          <input type="password" id="form2Example27" class="form-control form-control-lg"
+                            name="password" />
+                          <label class="form-label" for="form2Example27" id="password">Password</label>
+                        </div>
+                        <div class="pt-1 mb-4 d-flex flex-column align-items-center">
+                          <button type="submit" class="btn btn-dark btn-lg w-100 mb-2">
+                            Login
+                          </button>
+                          <a href="/user/google"
+                            class="btn btn-outline-info btn-lg w-100 mb-2 d-flex justify-content-center align-items-center">
+                            <i class="fab fa-google me-2"></i> Sign in with Google
+                          </a>
+                        </div>
+                        <div class="pt-1 mb-4 d-flex flex-column align-items-center">
+                          <a href="/admin/adminLogin" class="btn btn-outline-danger btn-lg w-100">
+                            Admin Login
+                          </a>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                          <a class="small text-muted d-flex align-items-center" href="/user/forgot">
+                            <i class="fas fa-question-circle me-2"></i> Forgot password?
+                          </a>
+                          <p class="mb-0 text-muted">Don't have an account? <a href="/user/signup"
+                              class="text-primary">Register here</a></p>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+
+
+    <script>
+      function validateForm() {
+        const email = document.querySelector('[name="email"]');
+        const password = document.querySelector('[name="password"]');
+        // console.log(email, password)
+
+        // Check if any field is empty or contains only whitespace
+        if (!email.value.trim() || !password.value.trim()) {
+          Swal.fire({
+            title: 'Error!',
+            text: 'All fields are necessary',
+            icon: 'error',
+            confirmButton: 'Cool'
+          })
+          return false;
+        } else if (password.value.split('').length < 8 || password.value.split('').length > 10) {
+          Swal.fire({
+            title: 'Error!',
+            text: 'Check Passowrd Credentials !',
+            icon: 'error',
+            confirmButton: 'Ok'
+          })
+          return false;
+        }
+        return true;
+      }
+    </script>
+
+
+    <script>
+      const urlParams = new URLSearchParams(window.location.search);
+      const message = urlParams.get('msg'); // Change 'message' to 'msg'
+      if (typeof message !== 'undefined') {
+        if (message.includes('email')) {
+          Swal.fire({
+            title: "Failure",
+            text: "Email/ User not found!",
+            icon: "error",
+            confirmButtonText: 'OK'
+          });
+        } else if (message.includes('password')) {
+          Swal.fire({
+            title: "Failure",
+            text: "Wrong password!",
+            icon: "error",
+            confirmButtonText: 'OK'
+          });
+        } else if (message.includes('userBlocked')) {
+          Swal.fire({
+            title: "Failure",
+            text: "Your have been banned!",
+            icon: "error",
+            confirmButtonText: 'OK'
+          });
+        } else if (message.includes('tokenExpired')) {
+          Swal.fire({
+            title: "Failure",
+            text: "The session has expired, Login in again !",
+            icon: "error",
+            confirmButtonText: 'Login'
+          });
+        }
+        else if (message.includes('loggin')) {
+          Swal.fire({
+            title: "Failure",
+            text: "Please Login!",
+            icon: "error",
+            confirmButtonText: 'Login'
+          });
+        } else if (message.includes('success')) {
+          Swal.fire({
+            title: "Password",
+            text: "Password Changed!",
+            icon: "success",
+            confirmButtonText: 'OK',
+            timer: 1500
+          });
+        }
+        window.history.replaceState({}, document.title, window.location.pathname);
+      }
+    </script>
+
+    <%- include('../partials/footer') %>

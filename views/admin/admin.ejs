@@ -1,0 +1,224 @@
+<%- include('../partials/adminHeader') %>
+
+    <style>
+        .sidebar {
+            height: 100%;
+            overflow-y: auto;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                height: auto;
+                overflow: visible;
+                position: relative; 
+            }
+        }
+    </style>
+
+
+<main class="container-fluid d-flex flex-wrap mt-3 g-5">
+    <div class="col-md-3 mb-3 border border-rounded border-left-0 flex-shrink-0 sidebar">
+        <h3 class="text-center">Admin</h3>
+        <ul class="nav nav-pills flex-column">
+            <li class="nav-item mt-2">
+                <a class="nav-link active" href="/">Dashboard</a>
+            </li>
+            <li class="nav-item mt-2">
+                <a class="nav-link" href="/admin/category">Category</a>
+            </li>
+            <li class="nav-item mt-2">
+                <a class="nav-link" href="/admin/products">Products</a>
+            </li>
+            <li class="nav-item mt-2">
+                <a class="nav-link" href="/admin/users">Manage Users</a>
+            </li>
+            <li class="nav-item mt-2">
+                <a class="nav-link" href="/admin/coupon">Coupons</a>
+            </li>
+            <li class="nav-item mt-2">
+                <a class="nav-link" href="/admin/offers">Offers</a>
+            </li>
+            <li class="nav-item mt-2">
+                <a class="nav-link" href="/admin/manageOrders">Orders</a>
+            </li>
+            <li class="nav-item mt-2">
+                <a class="nav-link border border-danger bg-danger text-white text-center" href="/admin/logout">Logout</a>
+            </li>
+        </ul>
+    </div>
+    <div class="col-md-9 px-4 content">
+        <div class="container-fluid">
+            <div class="row border mb-4">
+                <h5>Sales data</h5>
+                <div class="d-flex justify-content-end mt-4">
+                    <select name="filterType" class="form-select w-auto">
+                        <option value="weekly">Week</option>
+                        <option value="monthly">Month</option>
+                        <option value="yearly">Year</option>
+                    </select>
+                </div>
+                <div class="px-3" id="chart">
+                    <canvas id="myChart" width="100%" height="300px"></canvas>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 d-flex justify-content-center border p-4 mb-3">
+                        <h6>Total Sales: <%= overallSales %></h6>
+                    </div>
+                    <div class="col-md-6 d-flex justify-content-center border p-4 mb-3">
+                        <h6>Total Amount: <%= overallAmount.toFixed() %></h6>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row border p-4 mb-4">
+                <div class="col-md-8 offset-md-2">
+                    <form id="salesReportForm" action="/admin/salesReport" method="POST">
+                        <div class="mb-3">
+                            <label for="filterType" class="form-label">Select Filter Type:</label>
+                            <select class="form-select" id="filterType" name="filterType">
+                                <option value="daily">Daily</option>
+                                <option value="weekly">Weekly</option>
+                                <option value="monthly">Monthly</option>
+                                <option value="yearly">Yearly</option>
+                                <option value="custom">Custom</option>
+                            </select>
+                        </div>
+                        <div id="customDateInputs" class="mb-3" style="display: none;">
+                            <div class="mb-3">
+                                <label for="startDate" class="form-label">Start Date:</label>
+                                <input type="date" class="form-control" id="startDate" name="startDate">
+                            </div>
+                            <div class="mb-3">
+                                <label for="endDate" class="form-label">End Date:</label>
+                                <input type="date" class="form-control" id="endDate" name="endDate">
+                            </div>
+                        </div>
+                        <div class="d-flex flex-column flex-md-row justify-content-between">
+                            <button type="submit" class="btn btn-danger mb-2 mb-md-0" name="reportType" value="pdf">PDF Report</button>
+                            <button type="submit" class="btn btn-success" name="reportType" value="excel">Excel Report</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="row my-4 border p-4">
+                <h4 class="text-center">Top 5 Selling Categories</h4>
+                <div class="col-12">
+                    <ul class="list-group">
+                        <% topCategories.forEach((category)=> { %>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <%= category.name %>
+                                <span class="badge bg-primary rounded-pill">
+                                    <%= category.totalQuantity %> sales
+                                </span>
+                            </li>
+                        <% }) %>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="row my-4 border border-rounded p-4">
+                <h4 class="text-center">Top 5 Selling Products</h4>
+                <div class="col-12">
+                    <ul class="list-group">
+                        <% topProducts.forEach((product)=> { %>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <%= product.name %>
+                                <span class="badge bg-success rounded-pill">
+                                    <%= product.quantitySold %> sales
+                                </span>
+                            </li>
+                        <% }) %>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+
+            const filterTypeSelect = document.getElementById('filterType');
+            const customDateInputs = document.getElementById('customDateInputs');
+            let myChart = null;
+
+            filterTypeSelect.addEventListener('change', function () {
+                if (filterTypeSelect.value === 'custom') {
+                    customDateInputs.style.display = 'block';
+                } else {
+                    customDateInputs.style.display = 'none';
+                }
+            });
+
+            function renderChart(labelData, dataSetData) {
+
+                const ctx = document.getElementById('myChart').getContext('2d');
+
+                if (myChart) {
+                    myChart.destroy();
+                }
+
+                myChart = new Chart(ctx, {
+                    type: 'bar', // Specify the type of chart
+                    data: {
+                        labels: labelData,
+                        datasets: [{
+                            label: 'Number of sales',
+                            data: dataSetData,
+                            backgroundColor: [
+                                'rgba(255, 99, 132, 0.2)',
+                                'rgba(54, 162, 235, 0.2)',
+                                'rgba(255, 206, 86, 0.2)',
+                                'rgba(75, 192, 192, 0.2)',
+                                'rgba(153, 102, 255, 0.2)',
+                                'rgba(255, 159, 64, 0.2)'
+                            ],
+                            borderColor: [
+                                'rgba(255, 99, 132, 1)',
+                                'rgba(54, 162, 235, 1)',
+                                'rgba(255, 206, 86, 1)',
+                                'rgba(75, 192, 192, 1)',
+                                'rgba(153, 102, 255, 1)',
+                                'rgba(255, 159, 64, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        },
+                        layout: {
+                            padding: 20
+                        }
+                    }
+                });
+            }
+
+            const select = document.querySelector('[name="filterType"]')
+            select.addEventListener('change', () => {
+                const value = select.value
+
+                axios.post('/admin/generateChart', {
+                    filterType: value
+                })
+                    .then((json) => {
+                        renderChart(json.data.labelData, json.data.dataSetData)
+                    })
+                    .catch((e) => {
+                        alert(e)
+                    })
+            })
+
+        });
+
+    </script>
+
+    <%- include('../partials/footer') %>

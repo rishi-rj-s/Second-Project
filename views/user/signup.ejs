@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.6.0/dist/sweetalert2.all.min.js"></script>
+  <title>Rishi Studio</title>
+  <style>
+    .carousel-inner img {
+      width: 100%;
+      height: auto;
+      object-fit: cover;
+    }
+
+    a {
+      text-decoration: none;
+      color: white;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/public/img/icon.jpg">
+</head>
+
+<body>
+
+  <!-- nav -->
+
+  <header>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+          <em>
+            <h2><i class="bi bi-gem pe-2"></i>RISHI STUDIO</h2>
+          </em>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
+          aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNavDropdown">
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="/"><i class="bi bi-house"></i> Home</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main class="">
+    <div class="container">
+      <section class="h-100 ">
+        <div class="container py-5 h-100">
+          <div class="row d-flex justify-content-center align-items-center h-100">
+            <div class="col">
+              <div class="card card-registration my-4">
+                <div class="row g-0">
+                  <div class="col-xl-6 d-none d-xl-block">
+                    <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-registration/img4.webp"
+                      alt="Sample photo" class="img-fluid"
+                      style="border-top-left-radius: .25rem; border-bottom-left-radius: .25rem;" />
+                  </div>
+                  <div class="col-xl-6">
+                    <div class="card-body p-md-5 text-black">
+                      <form action="/user/registerUser" method="POST" id="signUpForm" onsubmit="return validateForm()">
+                        <h3 class="mb-5 text-uppercase" id="heading">Sign Up!</h3>
+                        <div class="row">
+                          <div class="col-md-12 mb-6">
+                            <div data-mdb-input-init class="form-outline">
+                              <input type="text" id="form3Example1m" class="form-control form-control-lg" name="name" required />
+                              <label class="form-label" for="form3Example1m">First name</label>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-md-12 mb-6">
+                            <div data-mdb-input-init class="form-outline">
+                              <input type="email" id="email" class="form-control form-control-lg" name="email" required />
+                              <label class="form-label" for="email">Email</label>
+                            </div>
+                          </div>
+                        </div>
+                        <div data-mdb-input-init class="form-outline mb-4">
+                          <input type="password" id="form3Example90" class="form-control form-control-lg" name="password" required />
+                          <label class="form-label" for="form3Example90">Password</label>
+                        </div>
+                        <div class="d-flex justify-content-end pt-3">
+                          
+                          <a href="/user/google"><button type="button" id="googleSignIn" data-mdb-button-init data-mdb-ripple-init class="btn btn-info btn-lg">Signin Using Google</button></a>
+                          <div class="div" id="sendOtpButtonDiv">
+                            <button type="button" id="sendOtpButton" data-mdb-button-init data-mdb-ripple-init class="btn btn-warning btn-lg ms-2">Send Otp</button>
+                          </div>
+                        </div>
+                        <div class="div" id="otpDiv"></div>
+                      </form>
+                      
+                      <script>
+                        function disableOtpButton() {
+                          const sendOtpButtonDiv = document.getElementById('sendOtpButtonDiv');
+                          if (sendOtpButtonDiv) {
+                            sendOtpButtonDiv.style.display = "none";
+                          }
+                        }
+                      
+                        function resendButton() {
+                          const sendOtpButtonDiv = document.getElementById('sendOtpButtonDiv');
+                          if (sendOtpButtonDiv) {
+                            sendOtpButtonDiv.style.display = "inline-block";
+                          }
+                        }
+                      
+                        document.getElementById('sendOtpButton').addEventListener('click', async function sendOtp() {
+                          console.log("Triggered! front")
+                          const email = document.getElementById('email').value;
+                          try {
+                            const response = await fetch('/user/sendOtp', {
+                              method: 'POST',
+                              headers: {
+                                'Content-Type': 'application/json'
+                              },
+                              body: JSON.stringify({ email })
+                            });
+                      
+                            const data = await response.json();
+                      
+                            if (response.ok) {
+                              alert('OTP sent successfully and is valid for 30 secs');
+                              disableOtpButton();
+                              document.getElementById('otpDiv').innerHTML = `
+                                <div data-mdb-input-init class="form-outline my-4">
+                                  <input type="text" id="otpInput" class="form-control form-control-lg" name="otp" required />
+                                  <label class="form-label" for="otpInput">Enter OTP</label>
+                                  <button type="button" id="verifyOtp" class="btn btn-danger m-2">Verify Otp</button>
+                                  <div id="timer" class="text-muted">OTP is valid for <span id="countdown">30</span> seconds.</div>
+                                </div>
+                              `;
+                      
+                              // Start the timer
+                              startTimer(30);
+                      
+                              // Add event listener to the verify button after it is added to the DOM
+                              document.getElementById('verifyOtp').addEventListener('click', async function () {
+                                const otp = document.getElementById('otpInput').value;
+                      
+                                const response = await fetch('/user/verifyOtp', {
+                                  method: 'POST',
+                                  headers: {
+                                    'Content-Type': 'application/json'
+                                  },
+                                  body: JSON.stringify({ otp })
+                                });
+                      
+                                if (!response.ok) { // Check if the request was successful (status 200-299)
+                                  const errorData = await response.json();
+                                  console.error("Verification failed:", errorData.message);
+                                  // Handle verification failure in a generic way if needed
+                                  return;
+                                }
+                      
+                                const data = await response.json();
+                                console.log("After waiting for data")
+                      
+                                switch (data.message) {
+                                  case "Verified":
+                                    window.alert("Success")
+                                    console.log("OTP verified successfully!");
+                      
+                                    // Submit the form
+                                    document.getElementById('signUpForm').submit();
+                                    break;
+                                  case "Invalid":
+                                    window.alert("invalid")
+                                    console.error("Invalid OTP. Please try again.");
+                                    // Display an error message to the user
+                                    break;
+                                  case "Expired":
+                                    window.alert("expired")
+                                    console.error("OTP has expired. Please request a new one.");
+                                    // Display an appropriate message and handle expiration logic
+                                    break;
+                                  default:
+                                    console.error("Unexpected response from server.");
+                                    // Handle any unexpected messages from the server
+                                }
+                              });
+                      
+                            } else {
+                              alert('Failed to send OTP: ' + data.error);
+                            }
+                          } catch (error) {
+                            alert('Error: ' + error.message);
+                          }
+                        });
+                      
+                        function startTimer(duration) {
+                          let timer = duration, minutes, seconds;
+                          const countdownElement = document.getElementById('countdown');
+                          const interval = setInterval(function () {
+                            minutes = parseInt(timer / 60, 10);
+                            seconds = parseInt(timer % 60, 10);
+                      
+                            seconds = seconds < 10 ? "0" + seconds : seconds;
+                      
+                            countdownElement.textContent = seconds;
+                      
+                            if (--timer < 0) {
+                              clearInterval(interval);
+                              resendButton();
+                            }
+                          }, 1000);
+                        }
+                      
+                        function validateForm() {
+                          const email = document.querySelector('[name="email"]');
+                          const password = document.querySelector('[name="password"]');
+                          const name = document.querySelector('[name="name"]');
+                      
+                          // Check if any field is empty or contains only whitespace
+                          if (!email.value.trim() || !password.value.trim() || !name.value.trim()) {
+                            Swal.fire({
+                              title: 'Error!',
+                              text: 'All fields are necessary',
+                              icon: 'error',
+                              confirmButton: 'Cool'
+                            });
+                            return false;
+                          } else if (password.value.length < 8 || password.value.length > 10) {
+                            Swal.fire({
+                              title: 'Error!',
+                              text: 'Check Password Credentials!',
+                              icon: 'error',
+                              confirmButton: 'Ok'
+                            });
+                            return false;
+                          }
+                          return true;
+                        }
+                      
+                        const urlParams = new URLSearchParams(window.location.search);
+                        const message = urlParams.get('msg');
+                        if (message) {
+                          if (message.includes('email')) {
+                            Swal.fire({
+                              title: "Failure",
+                              text: "Email/ User not found!",
+                              icon: "error",
+                              confirmButtonText: 'OK'
+                            });
+                            window.history.replaceState({}, document.title, window.location.pathname);
+                          } else if (message.includes('password')) {
+                            Swal.fire({
+                              title: "Failure",
+                              text: "Wrong password!",
+                              icon: "error",
+                              confirmButtonText: 'OK'
+                            });
+                            window.history.replaceState({}, document.title, window.location.pathname);
+                          }
+                        }
+                      </script>
+                      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>                                          
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+  </main>
+
+  <%- include('../partials/footer') %>
+

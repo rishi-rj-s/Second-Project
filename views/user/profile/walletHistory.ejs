@@ -1,0 +1,226 @@
+<%- include('../../partials/userHeader') %>
+
+    <head>
+        <style>
+            .gradient-custom {
+                /* fallback for old browsers */
+                background: #f6d365;
+
+                /* Chrome 10-25, Safari 5.1-6 */
+                background: -webkit-linear-gradient(to right bottom, rgba(246, 211, 101, 1), rgba(253, 160, 133, 1));
+
+                /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+                background: linear-gradient(to right bottom, rgba(246, 211, 101, 1), rgba(253, 160, 133, 1))
+            }
+
+            h6 {
+                margin-top: 50px;
+            }
+        </style>
+    </head>
+
+    <div class="bg-primary">
+        <div class="container py-4">
+            <!-- Breadcrumb -->
+            <nav class="d-flex">
+                <h5 class="mb-0">
+                    <a href="/" class="text-white-50">Home</a>
+                    <span class="text-white-50 mx-2"> > </span>
+                    <a href="/user/profile" class="text-white-50">Account</a>
+                    <span class="text-white-50 mx-2"> > </span>
+                    <a href="/user/wallethistory" class="text-white">Wallet History</a>
+                </h5>
+            </nav>
+            <!-- Breadcrumb -->
+        </div>
+    </div>
+
+    <section class="pt-3 shadow-lg"> <!-- Added shadow-lg class for a larger shadow -->
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3 px-3">
+                    <div class="account-nav rounded shadow bg-white p-4">
+                        <div class="text-center mb-4">
+                            <h4 class="mb-0">Hi <%= user.name %></h4>
+                            <p class="text-muted">Your personal dashboard</p>
+                        </div>
+                        <div class="text-center my-3">
+                            <a class="nav-link" href="/user/viewCart">
+                                <i class="fa-solid fa-wallet me-1"></i>Wallet Amount: <%= user.wallet.toFixed(2) %>
+                            </a>
+                        </div>
+                        <hr>
+                        <button class="btn btn-primary w-100" type="button" data-bs-toggle="collapse" data-bs-target="#navCollapse" aria-expanded="false" aria-controls="navCollapse">
+                            Menu
+                        </button>
+                        <div class="collapse mt-3" id="navCollapse">
+                            <ul class="list-unstyled mb-0">
+                                <li>
+                                    <a href="/user/profile" class="text-decoration-none text-primary d-block py-2">
+                                        <button class="btn btn-secondary w-100">Profile</button>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="/user/address" class="text-decoration-none text-dark d-block py-2">
+                                        <button class="btn btn-secondary w-100">Address</button>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="/user/orders" class="text-decoration-none text-dark d-block py-2">
+                                        <button class="btn btn-secondary w-100">My Orders</button>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="/user/viewWishlist" class="text-decoration-none text-dark d-block py-2">
+                                        <button class="btn btn-secondary w-100">My Wishlist</button>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="/user/wallethistory" class="text-decoration-none text-dark d-block py-2">
+                                        <button class="btn btn-primary w-100">Wallet History</button>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="/user/forgot" class="text-decoration-none text-dark d-block py-2">
+                                        <button class="btn btn-secondary w-100">Change Password</button>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="col-lg-9 px-3">
+                    <!-- //orders -->
+                    <div class="col-md-9 checkout">
+                        <div class="container">
+                            <div class="d-flex justify-content-between">
+                                <h4>Orders</h4>
+
+                            </div>
+
+                            <hr>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <nav>
+                                        <div class="nav nav-tabs mb-3">
+                                            <button class="nav-link active border-white border-bottom-0" type="button"
+                                                role="tab" id="nav-placed-tab" data-bs-toggle="tab"
+                                                data-bs-target="#nav-placed" aria-controls="nav-placed"
+                                                aria-selected="true">Order Placed</button>
+                                        </div>
+                                    </nav>
+                                    <div class="tab-content mb-5">
+                                        <div class="tab-pane active ms-4" id="nav-returned" role="tabpanel"
+                                            aria-labelledby="nav-returned-tab">
+                                            <% if(response===false){ %>
+                                                <div class="col-md-12 mb-3">
+                                                    <div class="card shadow">
+                                                        <div
+                                                            class="card-header d-flex justify-content-between align-items-center">
+                                                            <h5 class="card-title text-muted m-2">No Transaction
+                                                            </h5>
+                                                        </div>
+                                                        <div class="card-body">
+                                                            <div class="d-flex">
+                                                                <span class="m-1 font-weight-bold">
+                                                                    No Transaction
+                                                                    History</span>
+                                                            </div>
+                                                            <!-- Add more order details here -->
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <% }else{ %>
+                                                    <% response.history.forEach((order, i)=> { %>
+
+                                                        <div class="col-md-12 mb-3">
+                                                            <div class="card shadow">
+                                                                <div
+                                                                    class="card-header d-flex justify-content-between align-items-center">
+                                                                    <h5 class="card-title text-muted m-2">Transaction
+                                                                        <%= i+1 %>
+                                                                    </h5>
+                                                                </div>
+                                                                <div class="card-body">
+                                                                    <div class="d-flex">
+                                                                        <span class="m-1 font-weight-bold">Transaction
+                                                                            Date: <%= new
+                                                                                Date(order.dateCreated).toDateString()
+                                                                                %></span>
+                                                                    </div>
+                                                                    <div class="d-flex">
+                                                                        <span class="m-1 font-weight-bold">Total amount:
+                                                                            <%= order.amount %>
+                                                                        </span>
+                                                                    </div>
+                                                                    <div class="d-flex">
+                                                                        <% if( order.type == "credit"){ %>
+                                                                        <span class="m-1 font-weight-bold text-success">Type : <%=
+                                                                                order.type %></span>
+                                                                                <% }else{ %>
+                                                                                    <span class="m-1 font-weight-bold text-danger">Type : <%=
+                                                                                order.type %></span>
+                                                                                    <% } %>
+                                                                    </div>
+                                                                    <div class="d-flex">
+                                                                        <span class="m-1 font-weight-bold">Wallet Balance : <%=
+                                                                                order.walletBalance %></span>
+                                                                    </div>
+                                                                    <!-- Add more order details here -->
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <% }) }; %>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+
+    </section>
+    <script>
+        document.querySelectorAll('.cancelButton').forEach(button => {
+            button.addEventListener('click', async () => {
+                const id = button.getAttribute('data-orderId');
+
+                try {
+                    const response = await fetch(`/user/cancelOrder/${id}`, {
+                        method: "PATCH"
+                    });
+
+                    if (response.ok) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Order Cancelled',
+                            text: `Order has been cancelled successfully.`,
+                            confirmButtonText: 'OK'
+                        })
+                            .then(() => {
+                                window.location.reload();
+                            })
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Cancellation Failed',
+                            text: `Failed to cancel order ${id}. Please try again.`,
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                } catch (error) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'An error occurred. Please try again later.',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            });
+        });
+    </script>
+    <%- include('../../partials/footer') %>

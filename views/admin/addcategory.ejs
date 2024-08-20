@@ -1,0 +1,131 @@
+<%- include('../partials/adminHeader') %>
+
+    <!-- main -->
+
+    <main class="container d-flex flex-wrap p-5 g-5">
+        <div class="col-md-3 mb-3 border border-rounded border-left-0">
+            <h3 class="text-center">Admin</h3>
+            <ul class="nav nav-pills flex-column">
+                <li class="nav-item">
+                    <a class="nav-link " href="/">Dashboard</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/admin/category">Category</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/admin/products">Products</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/admin/users">Manage Users</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="admin/admin/">Coupons</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/admin/manageOrders">Orders</a>
+                  </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/admin/logout">Logout</a>
+                </li>
+            </ul>
+        </div> 
+        <div class="col-md-9">
+            <div class="container ">
+                <div class="m-5 p-5 d-flex justify-content-center border border-secondary rounded">
+                    <form class="row g-3" action="/admin/addCategory" method="POST" onsubmit="return validateForm()">
+                        <h3 class="text-center">Add Category !</h3>
+                        <div class="col-md-12">
+                            <label for="inputEmail4" class="form-label">Name</label>
+                            <input type="text" name="name" class="form-control" id="inputEmail4" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleFormControlTextarea1">Description</label>
+                            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="description"></textarea>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="col-12">
+                                <label for="inputPassword" class="form-label" >Rate starting from</label>
+                                <input type="text" name="rate" class="form-control" id="inputPassword" placeholder="*******">
+                            </div>
+                            <div class="form-check m-3 justify-content-center d-flex p-0">
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-primary w-100">Add Category</button>
+                        </div>
+                    </form>
+                </div>
+    </main>
+
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const message = urlParams.get('msg'); // Change 'message' to 'msg'
+        if (typeof message !== 'undefined') {
+            if (message.includes('added')) {
+                Swal.fire({
+                    icon: "success",
+                    title: "Product added Successfully!",
+                    showConfirmButton: true
+                });
+                window.history.replaceState({}, document.title, window.location.pathname);
+            } else if (message.includes('password')) {
+                Swal.fire({
+                    title: "Failure",
+                    text: "Wrong password!",
+                    icon: "error",
+                    confirmButtonText: 'OK'
+                });
+                window.history.replaceState({}, document.title, window.location.pathname);
+            } else if (message.includes('loggedout')) {
+                Swal.fire({
+                    position: "middle",
+                    icon: "warning",
+                    title: "Logged Out!",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+                window.history.replaceState({}, document.title, window.location.pathname);
+            } 
+        }
+    </script>
+
+<script>
+    function validateForm() {
+        const name = document.querySelector('[name="name"]');
+        const description = document.querySelector('[name="description"]');
+        const rate = document.querySelector('[name="rate"]');
+        // console.log(email, password)
+
+        // Check if any field is empty or contains only whitespace
+        if (!name.value.trim() || !description.value.trim() || !rate.value.trim()) {
+            Swal.fire({
+                title: 'Warning!',
+                text: 'All fields are necessary',
+                icon: 'error',
+                confirmButton: 'Cool'
+            })
+            return false;
+        } else if (rate < 1 || rate > 10000) {
+            Swal.fire({
+                title: 'Error!',
+                text: 'Check rate Credentials !',
+                icon: 'error',
+                confirmButton: 'Ok'
+            })
+            return false;
+        }
+        else if (description.value.trim().split('').length >100 || description.value.trim().split('').length < 5) {
+            Swal.fire({
+                title: 'Error!',
+                text: 'Check rate Credentials !',
+                icon: 'error',
+                confirmButton: 'Ok'
+            })
+            return false;
+        }
+        return true;
+    }
+</script>
+
+    <%- include('../partials/footer') %>

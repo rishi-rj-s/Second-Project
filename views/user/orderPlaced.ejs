@@ -1,0 +1,99 @@
+    <!-- User Header Partial -->
+    <%- include('../partials/userHeader') %> 
+
+    <!-- Heading -->
+    <div class="bg-primary">
+        <div class="container py-4">
+            <!-- Breadcrumb -->
+            <nav class="d-flex">
+                <h6 class="mb-0">
+                    <a href="" class="text-white-50">Home</a>
+                    <span class="text-white-50 mx-2"> > </span>
+                    <a href="" class="text-white">Order Confirmation</a>
+                </h6>
+            </nav>
+            <!-- Breadcrumb -->
+        </div>
+    </div>
+
+    <section class="bg-light py-5">
+        <div class="container justify-content-center d-flex">
+            <div class="col-xl-8 col-lg-8 mb-4">
+
+                <!-- Confirmation Message -->
+                <div class="card shadow-0 border">
+                    <div class="p-4">
+                        <h5 class="card-title mb-3">Order Confirmation</h5>
+                       <% if(paymentStatus == "Failed"){%>
+                       <div class="alert alert-warning" role="alert">
+                        <h4 class="alert-heading">Order Placed but Payment failed, please pay to get it delivered !</h4>
+                        <p>Your order has been placed successfully and Payment is pending. Thank you for shopping with us!</p>
+                        <hr>
+                        <p class="mb-0">You will receive an email confirmation shortly.</p>
+                    </div>
+                        <% }else{ %>
+                            <div class="alert alert-success" role="alert">
+                                <h4 class="alert-heading">Order Placed Successfully!</h4>
+                                <p>Your order has been placed successfully. Thank you for shopping with us!</p>
+                                <hr>
+                                <p class="mb-0">You will receive an email confirmation shortly.</p>
+                            </div>
+                            <% } %>
+                        <div class="text-center mt-4">
+                            <a href="/" class="btn btn-primary">Continue Shopping</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- Confirmation Message -->
+            </div>
+        </div>
+    </section>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <button class="btn btn-success" onclick="downloadInvoice()">Download Invoice</button>
+
+    <script>
+        async function downloadInvoice() {
+            alert("Function triggered");
+    
+            // Replace this with the actual way you're getting the orderDate
+            const orderDate = getOrderDate(); 
+    
+            if (!orderDate) {
+                alert("Order ID is missing");
+                return;
+            }
+    
+            console.log(`Order ID: ${orderDate}`);
+    
+            try {
+                const response = await fetch(`/user/invoice/${orderDate}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+    
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+    
+                const result = await response.json();
+                console.log(result);
+                alert('Invoice downloaded successfully!');
+                // Handle the response for downloading the invoice here
+            } catch (error) {
+                console.error('Error downloading invoice:', error);
+                alert('Failed to download invoice. Please try again later.');
+            }
+        }
+    
+        // Replace this with the actual way you're getting the orderDate
+        function getOrderDate() {
+            // Example implementation
+         return orderDate        }
+    </script>
+
+
+    <!-- Footer Partial -->
+    <%- include('../partials/footer') %>

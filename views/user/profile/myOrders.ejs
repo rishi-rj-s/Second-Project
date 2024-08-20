@@ -1,0 +1,355 @@
+<%- include('../../partials/userHeader') %>
+
+    <head>
+        <style>
+            .gradient-custom {
+                /* fallback for old browsers */
+                background: #f6d365;
+
+                /* Chrome 10-25, Safari 5.1-6 */
+                background: -webkit-linear-gradient(to right bottom, rgba(246, 211, 101, 1), rgba(253, 160, 133, 1));
+
+                /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+                background: linear-gradient(to right bottom, rgba(246, 211, 101, 1), rgba(253, 160, 133, 1))
+            }
+
+            h6 {
+                margin-top: 50px;
+            }
+        </style>
+    </head>
+
+    <div class="bg-primary bg-gradient shadow-lg">
+        <div class="container py-4">
+            <!-- Breadcrumb -->
+            <nav class="d-flex">
+                <h5 class="mb-0">
+                    <a href="/" class="text-white">Home</a>
+                    <span class="text-white-50 mx-2"> > </span>
+                    <a href="/user/profile" class="text-white">Account</a>
+                    <span class="text-white-50 mx-2"> > </span>
+                    <a href="/user/orders" class="text-white">My Orders</a>
+                </h5>
+            </nav>
+            <!-- Breadcrumb -->
+        </div>
+    </div>
+
+    <section class="pt-5"> <!-- Added shadow-lg class for a larger shadow -->
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3 px-3">
+                    <div class="account-nav rounded shadow bg-white p-4">
+                        <div class="text-center mb-4">
+                            <h4 class="mb-0">Hi <%= user.name %></h4>
+                            <p class="text-muted">Your personal dashboard</p>
+                        </div>
+                        <div class="text-center my-3">
+                            <a class="nav-link" href="/user/viewCart">
+                                <i class="fa-solid fa-wallet me-1"></i>Wallet Amount: <%= user.wallet.toFixed(2) %>
+                            </a>
+                        </div>
+                        <hr>
+                        <button class="btn btn-primary w-100" type="button" data-bs-toggle="collapse" data-bs-target="#navCollapse" aria-expanded="false" aria-controls="navCollapse">
+                            Menu
+                        </button>
+                        <div class="collapse mt-3" id="navCollapse">
+                            <ul class="list-unstyled mb-0">
+                                <li>
+                                    <a href="/user/profile" class="text-decoration-none text-primary d-block py-2">
+                                        <button class="btn btn-secondary w-100">Profile</button>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="/user/address" class="text-decoration-none text-dark d-block py-2">
+                                        <button class="btn btn-secondary w-100">Address</button>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="/user/orders" class="text-decoration-none text-dark d-block py-2">
+                                        <button class="btn btn-primary w-100">My Orders</button>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="/user/viewWishlist" class="text-decoration-none text-dark d-block py-2">
+                                        <button class="btn btn-secondary w-100">My Wishlist</button>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="/user/wallethistory" class="text-decoration-none text-dark d-block py-2">
+                                        <button class="btn btn-secondary w-100">Wallet History</button>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="/user/forgot" class="text-decoration-none text-dark d-block py-2">
+                                        <button class="btn btn-secondary w-100">Change Password</button>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-9 px-3 justify-content-center d-flex">
+                    <!-- //orders -->
+                    <div class="col-md-9 checkout">
+                        <div class="container">
+                            <div class="d-flex justify-content-between">
+                                <h4>Order History</h4>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <nav>
+                                        <div class="nav nav-tabs mb-3">
+                                            <!-- <button class="nav-link active border-white border-bottom-0" type="button"
+                                            role="tab" id="nav-placed-tab" data-bs-toggle="tab"
+                                            data-bs-target="#nav-placed" aria-controls="nav-placed"
+                                            aria-selected="true">Order Placed</button> -->
+                                        </div>
+                                    </nav>
+                                    <div class="tab-content mb-5">
+                                        <div class="tab-pane active ms-4" id="nav-returned" role="tabpanel"
+                                            aria-labelledby="nav-returned-tab">
+                                            <% if(orders.length==0){ %>
+                                                <div class="d-flex justify-content-center my-5 border">
+                                                    <h3>No orders yet</h3>
+                                                </div>
+                                                <% }else{ orders.forEach((order, i)=> { %>
+                                                    <div class="col-md-12 mb-3">
+                                                        <div class="card shadow">
+                                                            <div
+                                                                class="card-header d-flex justify-content-between align-items-center">
+                                                                <h5 class="card-title text-muted m-2">Order <%= i+1 %>
+                                                                </h5>
+                                                                <% if(order.status=="Pending" &&
+                                                                    order.paymentStatus=="Completed" ) { %>
+                                                                    <p
+                                                                        class="text-warning m-0 border-left border-secondary p-2">
+                                                                        Status : Order Placed
+                                                                    </p>
+                                                                    <button class="btn btn-warning cancelButton"
+                                                                        id="pendingOrderId"
+                                                                        data-orderId="<%= order._id %>">Cancel</button>
+                                                                    <% } else if(order.status=="Cancelled" ) { %>
+                                                                        <p
+                                                                            class="text-danger border-left border-danger m-0 p-2">
+                                                                            Status : Cancelled</p>
+                                                                        <% } else if(order.status=="Pending" &&
+                                                                            order.paymentStatus=="Failed" ) { %>
+                                                                            <p
+                                                                                class="text-warning m-0 border-left border-secondary p-2">
+                                                                                Status : Payment
+                                                                                Pending</p>
+                                                                            <button class="btn btn-success"
+                                                                                id="retryPayment"
+                                                                                data-orderId="<%= order._id %>"
+                                                                                data-amount='<%= order.totalAmount %>'>Retry
+                                                                                Payment</button>
+                                                                            <button class="btn btn-warning cancelButton"
+                                                                                id="pendingOrderId"
+                                                                                data-orderId="<%= order._id %>">Cancel</button>
+                                                                            <% } else if(order.status=="Delivered" ) {
+                                                                                %>
+                                                                                <p class="text-success m-0">Status :
+                                                                                    Delivered</p>
+                                                                                <a
+                                                                                    href="/user/invoice/<%= order._id %>">
+                                                                                    <button
+                                                                                        class="btn btn-success deliveredOrderId">
+                                                                                        Download Invoice
+                                                                                    </button>
+                                                                                </a>
+                                                                                <% } %>
+                                                            </div>
+                                                            <div class="card-body">
+                                                                <div class="d-flex">
+                                                                    <span class="m-1 font-weight-bold">Order Date: <%=
+                                                                            new Date(order.orderedDate).toDateString()
+                                                                            %></span>
+                                                                </div>
+                                                                <div class="d-flex">
+                                                                    <span class="m-1 font-weight-bold">Total Items: <%=
+                                                                            order.items.length %></span>
+                                                                </div>
+                                                                <% order.items.forEach((product, j)=> { %>
+                                                                    <div
+                                                                        class="border-left border-5 border-secondary my-3 p-3">
+                                                                        <div class="row">
+                                                                            <div class="col-8">
+                                                                                <h5
+                                                                                    class="justify-content-center d-flex">
+                                                                                    Product <%= j + 1 %>
+                                                                                </h5>
+                                                                                <% if (product.productId) { %>
+                                                                                    <p> Product Name : <%=
+                                                                                            product.productId.name %>
+                                                                                    </p>
+                                                                                    <p> Product quantity : <%=
+                                                                                            product.quantity %>
+                                                                                    </p>
+                                                                                    <p> Product price : <%=
+                                                                                            product.price %>
+                                                                                    </p>
+                                                                                    <% } else { %>
+                                                                                        <p class="text-danger">This
+                                                                                            product does not exist
+                                                                                            anymore</p>
+                                                                                        <% } %>
+                                                                            </div>
+                                                                            <div class="col-4">
+                                                                                <% if (product.productId &&
+                                                                                    product.productId.images &&
+                                                                                    product.productId.images.length> 0)
+                                                                                    { %>
+                                                                                    <img class="rounded-2 w-100"
+                                                                                        src="/<%= product.productId.images[0] %>" />
+                                                                                    <% } else { %>
+                                                                                        <p class="text-muted">No image
+                                                                                            available</p>
+                                                                                        <% } %>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <% }) %>
+                                                                        <div class="d-flex">
+                                                                            <span class="m-1 font-weight-bold">Payment
+                                                                                Method: <%= order.paymentMethod %>
+                                                                            </span>
+                                                                        </div>
+                                                                        <div class="d-flex">
+                                                                            <span class="m-1 font-weight-bold">Total
+                                                                                Amount: <%= order.totalAmount %></span>
+                                                                        </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <% }) } %>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+    </section>
+
+
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+    //
+    <script src="https://js.stripe.com/v3/"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+
+            document.querySelectorAll('.cancelButton').forEach(button => {
+                button.addEventListener('click',() => {
+                    const id = button.getAttribute('data-orderId');
+
+                    try {
+                        Swal.fire({
+                            title: "Are you sure?",
+                            text: "You won't be able to revert this!",
+                            icon: "warning",
+                            showCancelButton: true,
+                            confirmButtonColor: "#3085d6",
+                            cancelButtonColor: "#d33",
+                            confirmButtonText: "Yes, delete it!"
+                        }).then(async (result) => {
+                            const response = await fetch(`/user/cancelOrder/${id}`, {
+                            method: "PATCH"
+                        });
+                        if (response.ok) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Order Cancelled',
+                                text: `Order has been cancelled successfully.`,
+                                confirmButtonText: 'OK'
+                            })
+                                .then(() => {
+                                    window.location.reload();
+                                })
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Cancellation Failed',
+                                text: `Failed to cancel order ${id}. Please try again.`,
+                                confirmButtonText: 'OK'
+                            });
+                        }
+                        });
+
+                    } catch (error) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'An error occurred. Please try again later.',
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                });
+            });
+
+
+            document.querySelectorAll('#retryPayment').forEach(button => {
+                button.addEventListener('click', async () => {
+                    const id = button.getAttribute('data-orderId');
+                    const razorpayAmount = button.getAttribute('data-amount');
+                    try {
+
+                        const options = {
+                            key: "rzp_test_VsFnNZA1nNcWZT",
+                            amount: razorpayAmount * 100,
+                            currency: "INR",
+                            name: "RISHI STUDIO",
+                            description: "Food Purchased from Rishi Studio",
+                            image: "/assets/img/icon.jpg",
+
+                            handler: async function () {
+                                try {
+                                    const response = await axios.get(`/user/retryPayment/${id}`)
+                                    if (response.data.mission == "successfull") {
+                                        alert("Hello from the front end");
+                                        Swal.fire({
+                                            icon: 'success',
+                                            title: 'Payment Successfull',
+                                            text: `Continue, browsing the orders`,
+                                            confirmButtonText: 'OK'
+                                        }).then(() => window.location.reload())
+                                    }
+                                } catch (error) {
+                                    console.log(error)
+                                }
+                            },
+                            theme: {
+                                color: "#3399cc"
+                            },
+                            modal: {
+                                ondismiss: function () {
+                                    Swal.fire({
+                                        icon: 'warning',
+                                        title: 'Payment Interrupted',
+                                        text: 'Payment process was interrupted. Please try again.'
+                                    });
+                                }
+                            }
+                        };
+
+                        const rzp = new Razorpay(options);
+                        rzp.open();
+
+                    } catch (e) {
+                        console.log(e)
+                        res.status(500).send(e)
+                    }
+                });
+            });
+
+
+        });
+    </script>
+
+    <%- include('../../partials/footer') %>

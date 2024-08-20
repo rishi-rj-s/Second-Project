@@ -1,0 +1,246 @@
+<%- include('../partials/userHeader') %>
+
+  <div class="bg-primary shadow-lg">
+    <div class="container py-3">
+      <!-- Breadcrumb -->
+      <nav class="d-flex">
+        <h5 class="mb-0">
+          <a href="/" class="text-white-50" style="text-decoration: none;">Home</a>
+          <span class="text-white mx-2"> > </span>
+          <a href="/user/category" class="text-white" style="text-decoration: none;">Menu</a>
+        </h5>
+      </nav>
+      <!-- Breadcrumb -->
+    </div>
+  </div>
+
+  <!-- cards  -->
+  <div class="container-fluid ">
+    <div class="row w-100 mt-5">
+      <form class="w-100 filter-form" action="/user/filterSort" method="GET">
+        <div class="d-flex flex-column flex-md-row justify-content-center">
+          <div class="search-bar flex-grow-1 mb-2 mb-md-0">
+            <div class="input-group">
+              <input type="text" name="search" class="form-control shadow-lg" placeholder="Search products..."
+                aria-label="Search" value="<%= searchQuery %>">
+              <button class="btn btn-primary" type="submit">Search</button>
+            </div>
+          </div>
+
+          <div class="filter-options mx-2 mb-2 mb-md-0">
+            <div class="dropdown shadow-lg">
+              <button class="btn btn-secondary dropdown-toggle" type="button" id="filterDropdown"
+                data-bs-toggle="dropdown" aria-expanded="false">
+                Filter by
+              </button>
+              <ul class="dropdown-menu" aria-labelledby="filterDropdown">
+                <% category.forEach((dropdown)=>{ %>
+                  <li class="d-flex justify-content-center">
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" name="filter" value="<%= dropdown._id %>"
+                        id="category<%= dropdown._id %>" <%=selectedFilters.includes(dropdown._id.toString())
+                        ? 'checked' : '' %>>
+                      <label class="form-check-label" for="category<%= dropdown._id %>">
+                        <%= dropdown.name %>
+                      </label>
+                    </div>
+                  </li>
+                  <% }) %>
+              </ul>
+            </div>
+          </div>
+
+          <div class="sort-options mx-2 mb-2 mb-md-0">
+            <div class="dropdown shadow-lg">
+              <button class="btn btn-secondary dropdown-toggle" type="button" id="sortDropdown"
+                data-bs-toggle="dropdown" aria-expanded="false">
+                Sort by
+              </button>
+              <ul class="dropdown-menu" aria-labelledby="sortDropdown">
+                <li class="d-flex justify-content-center">
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="sort" value="objectId" id="sortPriceDesc"
+                      <%=selectedSort==='price_hightolow' ? 'checked' : '' %>>
+                    <label class="form-check-label" for="sortPriceDesc">None</label>
+                  </div>
+                </li>
+                <li class="d-flex justify-content-center">
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="sort" value="price_hightolow" id="sortPriceDesc"
+                      <%=selectedSort==='price_hightolow' ? 'checked' : '' %>>
+                    <label class="form-check-label" for="sortPriceDesc">Price - Desc</label>
+                  </div>
+                </li>
+                <li class="d-flex justify-content-center">
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="sort" value="price_lowtohigh" id="sortPriceAsc"
+                      <%=selectedSort==='price_lowtohigh' ? 'checked' : '' %>>
+                    <label class="form-check-label" for="sortPriceAsc">Price - Asc</label>
+                  </div>
+                </li>
+                <li class="d-flex justify-content-center">
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="sort" value="name_lowtohigh" id="sortNameAsc"
+                      <%=selectedSort==='name_lowtohigh' ? 'checked' : '' %>>
+                    <label class="form-check-label" for="sortNameAsc">A-Z</label>
+                  </div>
+                </li>
+                <li class="d-flex justify-content-center">
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="sort" value="name_hightolow" id="sortNameDesc"
+                      <%=selectedSort==='name_hightolow' ? 'checked' : '' %>>
+                    <label class="form-check-label" for="sortNameDesc">Z-A</label>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary apply-button shadow-lg">Apply Filters & Sort</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="container my-5">
+      <div class="row justify-content-center">
+        <div class="container" id="scrollspyHeading1">
+          <% if(products.length===0 ) {%>
+            <div class="d-flex justify-content-center mt-5">
+              <h3>No results !</h3>
+            </div>
+            <% }else{ %>
+              <% products.forEach(product=> { %>
+                <div class="row p-3 w-100" style="height: auto;">
+                  <div class="col-12 col-md-8">
+                    <div class="card h-100 shadow-lg" style="max-width: auto;">
+                      <div class="row g-0">
+                        <div class="col-md-4">
+                          <img src="/<%= product.images[0] %>" class="img-fluid rounded-start" alt="...">
+                        </div>
+                        <div class="col-md-8">
+                          <div class="card-body">
+                            <h5 class="card-title">
+                              <%= product.name %>
+                            </h5>
+                            <p class="card-text">Description : <%= product.description %>
+                            </p>
+                          </div>
+                          <ul class="list-group list-group-flush">
+                            <li class="list-group-item">Category : <%= product.category.name %>
+                              <li class="list-group-item">
+                                Rating :
+                                <% for (let i=1; i <=5; i++) { %>
+                                    <% if (i <=Math.floor(product.rating)) { %>
+                                        <i class="fa fa-star text-warning"></i>
+                                        <% } else if (i===Math.ceil(product.rating) && product.rating % 1
+                                            !==0) { %>
+                                            <i class="fa fa-star-half-alt text-warning"></i>
+                                            <% } else { %>
+                                                <i class="fa fa-star text-muted"></i>
+                                                <% } %>
+                                                    <% } %>
+                            </li>
+                          </ul>
+                          <div class="card-body">
+                            <a href="/user/productDetailed/<%= product._id %>"><button type="button"
+                                class="btn btn-outline-info">View Details</button></a>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-12 col-md-4">
+                    <div class="card border-dark mb-3 h-100">
+                      <div class="card-header">
+                        <h3>Rs. <%= product.rate %>
+                        </h3>
+                      </div>
+                      <div class="card-body">
+                        <h5 class="card-title">
+                          Rating :
+                          <% for (let i=1; i <=5; i++) { %>
+                              <% if (i <=Math.floor(product.rating)) { %>
+                                  <i class="fa fa-star text-warning"></i>
+                                  <% } else if (i===Math.ceil(product.rating) && product.rating % 1 !==0)
+                                      { %>
+                                      <i class="fa fa-star-half-alt text-warning"></i>
+                                      <% } else { %>
+                                          <i class="fa fa-star text-muted"></i>
+                                          <% } %>
+                                              <% } %>
+                      </h5>
+                        <p class="card-text">Some quick example text to build on the card title and make up the bulk
+                          of the card's content.</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <% })} %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="d-flex justify-content-center mt-3" id="paginationForm">
+    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+      <% for(let i=1; i <=totalPages; i++) { %>
+        <label class="btn btn-secondary page-label <%= i == currentPage ? 'active' : '' %> mx-1">
+          <input type="radio" name="page" value="<%= i %>" <%=i==currentPage ? 'checked' : '' %>> <%= i %>
+        </label>
+        <% } %>
+    </div>
+  </div>
+
+  <% if(popularProducts.length > 0){ %>
+  <div class="container mt-5">
+    <h2 class="text-center">Popular Fashions</h2>
+    <div class="row justify-content-center">
+      <% popularProducts.forEach(product=> { %>
+        <div class="col-12 col-md-3 mb-4 justify-content-center">
+          <div class="card h-100">
+            <img src="/<%= product.images[0] %>" class="card-img-top" alt="<%= product.name %>"
+              style="object-fit: cover; height: 200px;">
+            <div class="card-body d-flex flex-column">
+              <h5 class="card-title">
+                <%= product.name %>
+              </h5>
+              <p class="card-text">
+                Description: <%= product.description %>
+              </p>
+              <p class="card-text">
+                Price: Rs. <%= product.rate %>
+              </p>
+              <p class="card-text">
+                Ratings: <%= product.ratings %> 5
+              </p>
+              <a href="/user/productDetailed/<%= product._id %>" class="btn btn-primary mt-auto">View Details</a>
+            </div>
+          </div>
+        </div>
+        <% }) %>
+    </div>
+  </div>
+  <% } %>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const pageLabels = document.querySelectorAll('.page-label');
+      pageLabels.forEach(label => {
+        label.addEventListener('click', function () {
+          const pageNumber = this.querySelector('input[name="page"]').value;
+          // alert(pageNumber);
+          changePage(pageNumber);
+        });
+      });
+    });
+
+    function changePage(pageNumber) {
+      const url = new URL(window.location.href);
+      url.searchParams.set('page', pageNumber);
+      window.location.href = url.toString();
+
+    }
+  </script>
+
+
+  <%- include('../partials/footer') %>

@@ -1,0 +1,299 @@
+<%- include('../partials/userHeader') %>
+<style>
+    .carousel-item img {
+  height: 400px; /* Set the desired height for the images */
+  object-fit: cover; /* This will ensure the image covers the entire space without cropping */
+  width: 100%; /* This will make the image fit the width of the carousel */
+}
+</style>
+
+<div class="bg-primary shadow-lg">
+    <div class="container py-3">
+        <!-- Breadcrumb -->
+        <nav class="d-flex">
+            <h5 class="mb-0">
+                <a href="/" class="text-white" style="text-decoration: none;">Home</a>
+            </h5>
+        </nav>
+        <!-- Breadcrumb -->
+    </div>
+  </div>
+
+    <!-- first carosal -->
+
+    <main class="mt-5 mb-0">
+        <div class="container my-5 shadow-lg">
+            <div class="row">
+                <div class="col-md-7">
+                    <div id="carouselExampleCaptions1" class="carousel slide" data-bs-ride="carousel">
+                        <div class="carousel-indicators">
+                            <button type="button" data-bs-target="#carouselExampleCaptions1" data-bs-slide-to="0"
+                                class="active" aria-current="true" aria-label="Slide 1"></button>
+                            <button type="button" data-bs-target="#carouselExampleCaptions1" data-bs-slide-to="1"
+                                aria-label="Slide 2"></button>
+                            <button type="button" data-bs-target="#carouselExampleCaptions1" data-bs-slide-to="2"
+                                aria-label="Slide 3"></button>
+                        </div>
+                        <div class="carousel-inner">
+                            <div class="carousel-item active">
+                                <img src="/assets/img/3.webp" class="d-block w-100 img-fluid" alt="...">
+                                <div class="carousel-caption d-none d-md-block">
+                                    <h5>First slide label</h5>
+                                    <p>Some representative placeholder content for the first slide.</p>
+                                </div>
+                            </div>
+                            <div class="carousel-item">
+                                <img src="/assets/img/K2.webp" class="d-block w-100 img-fluid" alt="...">
+                                <div class="carousel-caption d-none d-md-block">
+                                    <h5>Second slide label</h5>
+                                    <p>Some representative placeholder content for the second slide.</p>
+                                </div>
+                            </div>
+                            <div class="carousel-item">
+                                <img src="/assets/img/MM1.webp" class="d-block w-100 img-fluid" alt="...">
+                                <div class="carousel-caption d-none d-md-block">
+                                    <h5>Third slide label</h5>
+                                    <p>Some representative placeholder content for the third slide.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions1"
+                            data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions1"
+                            data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="col-md-5">
+                    <h3>Discover the Artistry of Rishi Studio</h3>
+                    <h6 class="mt-2">
+                        Immerse yourself in the captivating world of fashion, where creativity and craftsmanship intertwine.
+                    </h6>
+                    <p class="mt-2">
+                        At Rishi Studio, we are dedicated to redefining the fashion landscape by seamlessly blending contemporary
+                        designs with timeless elegance. Our exclusive collection showcases the pinnacle of sartorial excellence,
+                        catering to the discerning tastes of the modern fashion enthusiast. Established in 2023, Rishi Studio has
+                        quickly become a household name, with a growing presence across the region. From our flagship stores in
+                        [city 1], [city 2], and [city 3], we invite you to embark on a remarkable journey of style and self-expression.
+                        Prepare to be inspired by our meticulously curated range of apparel, accessories, and bespoke offerings that
+                        redefine the art of fashion.
+                    </p>
+                </div>
+                
+            </div>
+        </div>
+
+        <!-- cards  -->
+
+        <div class="container-fluid ">
+            <div class="container justify-content-center">
+                <div class="row">
+                    <h1 class="text-center pt-5">Categories</h1>
+                </div>
+
+                <div class="container my-5">
+
+                    <div class="row d-flex justify-content-center">
+                        <% category.forEach(element=> { %>
+
+                            <div class="col-sm-12 col-md-6 col-lg-3 d-12 gy-4 d-md-block mx-3 d-flex justify-content-center">
+                              <div class="card shadow-lg" style="width: 18rem;">
+                                <!-- // insert image herer -->
+                                <div class="card-body">
+                                  <h5 class="card-title"><%= element.name %></h5>
+                                  <p class="card-text"><%= element.description %></p>
+                                </div>
+                                <ul class="list-group list-group-flush">
+                                  <li class="list-group-item">Starts from Rs. <%= element.rate %>/-</li>
+                                  <li class="list-group-item">Rating dummmy</li>
+                                  <li class="list-group-item">A third item</li>
+                                </ul>
+                                <div class="card-body">
+                                  <button type="button" class="btn btn-outline-warning"><a href="/user/category/products/<%=element._id %>" class="text-decoration-none">View Category</a></button>
+                                </div>
+                              </div>
+                            </div>
+                
+                             <% }); %>
+                        </div>
+
+                        
+                    </div>
+                </div>
+
+            </div>
+
+
+            <!-- banner -->
+
+            <div class="container-fluid border-top border-bottom border-3 border-secondary border-dashed">
+                <div class="container d-flex justify-content-center">
+                    <div class="row-md-7">
+                        <h1 class="text-center pt-5">Banner for the ad</h1>
+                    </div>
+                </div>
+
+                <div class="container my-5">
+                    <div class="row">
+                        <div class="col-md-7">
+                            <div id="carouselExampleCaptions2" class="carousel slide" data-bs-ride="carousel">
+                                <div class="carousel-indicators">
+                                    <button type="button" data-bs-target="#carouselExampleCaptions2"
+                                        data-bs-slide-to="0" class="active" aria-current="true"
+                                        aria-label="Slide 1"></button>
+                                    <button type="button" data-bs-target="#carouselExampleCaptions2"
+                                        data-bs-slide-to="1" aria-label="Slide 2"></button>
+                                    <button type="button" data-bs-target="#carouselExampleCaptions2"
+                                        data-bs-slide-to="2" aria-label="Slide 3"></button>
+                                </div>
+                                <div class="carousel-inner">
+                                    <div class="carousel-item active">
+                                        <img src="/assets/img/W2.webp" class="d-block w-100 img-fluid" alt="...">
+                                        <div class="carousel-caption d-none d-md-block">
+                                            <h5>First slide label</h5>
+                                            <p>Some representative placeholder content for the first slide.</p>
+                                        </div>
+                                    </div>
+                                    <div class="carousel-item">
+                                        <img src="/assets/img/K4.webp" class="d-block w-100 img-fluid" alt="...">
+                                        <div class="carousel-caption d-none d-md-block">
+                                            <h5>Second slide label</h5>
+                                            <p>Some representative placeholder content for the second slide.</p>
+                                        </div>
+                                    </div>
+                                    <div class="carousel-item">
+                                        <img src="/assets/img/KK2.webp" class="d-block w-100 img-fluid"
+                                            alt="...">
+                                        <div class="carousel-caption d-none d-md-block">
+                                            <h5>Third slide label</h5>
+                                            <p>Some representative placeholder content for the third slide.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button class="carousel-control-prev" type="button"
+                                    data-bs-target="#carouselExampleCaptions2" data-bs-slide="prev">
+                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Previous</span>
+                                </button>
+                                <button class="carousel-control-next" type="button"
+                                    data-bs-target="#carouselExampleCaptions2" data-bs-slide="next">
+                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Next</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                            <h3>Discover the Artistry of Rishi Studio</h3>
+                            <h6 class="mt-2">
+                                Immerse yourself in the captivating world of fashion, where creativity and craftsmanship intertwine.
+                            </h6>
+                            <p class="mt-2">
+                                At Rishi Studio, we are dedicated to redefining the fashion landscape by seamlessly blending contemporary
+                                designs with timeless elegance. Our exclusive collection showcases the pinnacle of sartorial excellence,
+                                catering to the discerning tastes of the modern fashion enthusiast. Established in 2023, Rishi Studio has
+                                quickly become a household name, with a growing presence across the region. From our flagship stores in
+                                [city 1], [city 2], and [city 3], we invite you to embark on a remarkable journey of style and self-expression.
+                                Prepare to be inspired by our meticulously curated range of apparel, accessories, and bespoke offerings that
+                                redefine the art of fashion.
+                            </p>
+                        </div>
+                        
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- extra points -->
+
+            <div class="container my-5">
+                <div class="row text-center">
+                    <div class="col-xs-12 col-sm-12 col-md-6 col-lg-3 col-xl-3 d-flex flex-column align-items-center">
+                        <i class="bi bi-bag-check" style="font-size: 60px;"></i>
+                        <h6>Free Delivery</h6>
+                        <p>Please note that free delivery is only for orders above a specific amount.</p>
+                    </div>
+                    <div class="col-xs-12 col-sm-12 col-md-6 col-lg-3 col-xl-3 d-flex flex-column align-items-center">
+                        <i class="bi bi-credit-card" style="font-size: 60px;"></i>
+                        <h6>100% Secure Payment</h6>
+                        <p>Please note that free delivery is only for orders above a specific amount.</p>
+                    </div>
+                    <div class="col-xs-12 col-sm-12 col-md-6 col-lg-3 col-xl-3 d-flex flex-column align-items-center">
+                        <i class="bi bi-tag" style="font-size: 60px;"></i>
+                        <h6>Daily Offer</h6>
+                        <p>Please note that free delivery is only for orders above a specific amount.</p>
+                    </div>
+                    <div class="col-xs-12 col-sm-12 col-md-6 col-lg-3 col-xl-3 d-flex flex-column align-items-center">
+                        <i class="bi bi-star-fill" style="font-size: 60px;"></i>
+                        <h6>Quality Guarantee</h6>
+                        <p>Please note that free delivery is only for orders above a specific amount.</p>
+                    </div>
+                </div>
+            </div>
+            
+
+            <script>
+                const urlParams = new URLSearchParams(window.location.search);
+                const message = urlParams.get('msg'); // Change 'message' to 'msg'
+                if (typeof message !== 'undefined') {
+                    if (message.includes('success')) {
+                        Swal.fire({
+                            position: "middle",
+                            icon: "success",
+                            title: "Logged In",
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                        } else if (message.includes('password')) {
+                        Swal.fire({
+                            title: "Failure",
+                            text: "Wrong password!",
+                            icon: "error",
+                            confirmButtonText: 'OK'
+                        });
+                    } else if (message.includes('loggedout')) {
+                        Swal.fire({
+                            position: "middle",
+                            icon: "warning",
+                            title: "Logged Out!",
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                    } else if (message.includes('blocked')) {
+                        Swal.fire({
+                            title: "Failure",
+                            text: "User Blocked!",
+                            icon: "error",
+                            confirmButtonText: 'OK'
+                        });
+                    } 
+                    else if (message.includes('noexists')) {
+                        Swal.fire({
+                            title: "Failure",
+                            text: "Product not found!",
+                            icon: "error",
+                            confirmButtonText: 'OK'
+                        });
+                    } else if (message.includes('nouser')) {
+                        Swal.fire({
+                            icon: "info",
+                            title: "No User Logged In!",
+                            showConfirmButton: true
+                        });
+                    } else if (message.includes('inside')) {
+                        Swal.fire({
+                            icon: "info",
+                            title: "Existing User found!",
+                            showConfirmButton: true
+                        });
+                    } 
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                }
+            </script>
+
+
+            <%- include('../partials/footer') %>

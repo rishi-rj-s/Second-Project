@@ -1,0 +1,179 @@
+<%- include('../partials/userHeader') %>
+
+
+<div class="bg-primary shadow-lg">
+    <div class="container py-3">
+        <!-- Breadcrumb -->
+        <nav class="d-flex">
+            <h5 class="mb-0">
+                <a href="/" class="text-white-50" style="text-decoration: none;">Home</a>
+                <span class="text-white mx-2"> > </span>
+                <a href="/user/viewCart" class="text-white" style="text-decoration: none;">Cart</a>
+            </h5>
+        </nav>
+        <!-- Breadcrumb -->
+    </div>
+  </div>
+
+  <div class="container-fluid py-5 d-flex justify-content-center gradient-custom">
+    <div class="row">
+      <div class="col-12 col-md-8">
+        <div class="card mb-4">
+          <div class="card-header py-3">
+            <h4 class="mb-0">Cart Items - <% if(cart && cart.products.length > 0) { %><%= cart.products.length %><% } else { %> 0 <% } %></h4>
+          </div>
+          <div class="card-body">
+            <% if(!cart || cart.products.length == 0) { %>
+              <div class="row justify-content-center">
+                <div class="col-md-8">
+                  <h2 class="text-center m-5">Your cart is Empty</h2>
+                </div>
+              </div>
+            <% } else { %>
+              <% cart.products.forEach(product => { %>
+                <div class="row my-5">
+                  <div class="col-12 col-lg-3 mb-4 mb-lg-0">
+                    <div class="bg-image hover-overlay hover-zoom ripple rounded">
+                      <img src="/<%= product.productId.images[0] %>" class="w-100" alt="<%= product.productId.name %>" />
+                    </div>
+                  </div>
+  
+                  <div class="col-12 col-lg-5 mb-4 mb-lg-0">
+                    <p><strong><%= product.productId.name %></strong></p>
+                    <p>Info: <%= product.productId.description %></p>
+                    <p>Rating: <%= product.productId.rating %></p>
+                    <p>Availability: <%= product.productId.listing %></p>
+                    <p>Category: <%= product.productId.category.name %></p>
+                    <p class="d-flex justify-content-center justify-content-lg-start">
+                      <button type="button" id="delete" value="<%= product.productId._id %>" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-sm me-1 mb-2 w-50" data-mdb-tooltip-init title="Remove item">
+                        <i class="fas fa-trash"></i>
+                      </button>
+                      <button type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-danger btn-sm mb-2 w-50" data-mdb-tooltip-init title="Move to the wish list">
+                        <i class="fas fa-heart"></i>
+                      </button>
+                    </p>
+                  </div>
+  
+                  <div class="col-12 col-lg-4 mb-4 mb-lg-0 d-flex flex-column align-items-center align-items-lg-end">
+                    <div class="d-flex mb-4" style="max-width: 300px">
+                      <label class="form-label m-2 justify-content-between" for="form1-<%= product.productId._id %>">Quantity</label>
+  
+                      <button class="btn btn-primary px-3" onclick="updateQuantity('decrement', '<%= product.productId._id %>')">
+                        <i class="fas fa-minus"></i>
+                      </button>
+  
+                      <div class="form-outline">
+                        <input id="form1-<%= product.productId._id %>" min="1" max="5" name="quantity" value="<%= product.quantity %>" type="number" class="form-control" style="text-align: center;" disabled />
+                      </div>
+  
+                      <button class="btn btn-primary px-3 ms-2" onclick="updateQuantity('increment', '<%= product.productId._id %>')">
+                        <i class="fas fa-plus"></i>
+                      </button>
+                    </div>
+  
+                    <p class="text-start text-lg-end">
+                      <strong>Rs. Cost in total - <%= (product.productId.rate)*(product.quantity) %></strong>
+                    </p>
+                    <p class="text-start text-lg-end">
+                      <strong>Rs. Cost per piece - <%= (product.productId.rate) %></strong>
+                    </p>
+                  </div>
+                </div>
+              <% }); %>
+            <% } %>
+          </div>
+        </div>
+      </div>
+  
+      <% if(cart && cart.products.length > 0) { %>
+        <div class="col-12 col-md-4">
+          <div class="card mb-4">
+            <div class="card-header py-3">
+              <h5 class="mb-0">Summary</h5>
+            </div>
+            <div class="card-body">
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 pb-0">
+                  Products
+                  <span>Rs. <%= totalAmount %></span>
+                </li><br>
+                <li class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 mb-3">
+                  <div>
+                    <strong>Total amount</strong>
+                  </div>
+                  <span><strong>Rs. <%= totalAmount %></strong></span>
+                </li>
+              </ul>
+  
+              <a href="/user/checkout"><button type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-lg btn-block">
+                Go to checkout
+              </button></a>
+            </div>
+          </div>
+        </div>
+      <% } %>
+    </div>
+  </div>
+
+    <script>
+        document.getElementById('delete').addEventListener('click', async () => {
+            const id = document.getElementById('delete').value;
+    
+            try {
+                const response = await fetch(`/user/deleteProduct/${id}`, {
+                    method: "DELETE"
+                });
+    
+                const data = await response.json();
+    
+                if (response.ok) {
+                    switch (data.message) {
+                        case 'success':
+                            Swal.fire({
+                                title: 'Success!',
+                                text: 'Product successfully deleted.',
+                                icon: 'success',
+                                confirmButtonText: 'OK'
+                            }).then(() => {
+                                window.location.reload();   
+                            });
+                            break;
+                        case 'nouser':
+                            Swal.fire({
+                                title: 'Error!',
+                                text: 'No user found. Please log in.',
+                                icon: 'error',
+                                confirmButtonText: 'OK'
+                            }).then(() => {
+                                window.location.href = '/user/login?msg=loggin';
+                            });
+                            break;
+                        default:
+                            Swal.fire({
+                                title: 'Error!',
+                                text: 'Failed to delete product.',
+                                icon: 'error',
+                                confirmButtonText: 'OK'
+                            });
+                    }
+                } else {
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'Failed to delete product.',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            } catch (e) {
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'An error occurred while deleting the product.',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+                console.log(e);
+            }
+        });
+    </script>
+
+    <%- include('../partials/footer') %>

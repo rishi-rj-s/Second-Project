@@ -1,0 +1,340 @@
+<%- include('../partials/userHeader') %>
+
+  <!-- Heading -->
+  <div class="bg-primary shadow-lg">
+    <div class="container py-3 shadow-lg">
+      <!-- Breadcrumb -->
+      <nav class="d-flex">
+        <h5 class="mb-0">
+          <a href="/" class="text-white-50" style="text-decoration: none;">Home</a>
+          <span class="text-white-50 mx-2"> > </span>
+          <a href="/user/viewCart" class="text-white-50" style="text-decoration: none;">Cart</a>
+          <span class="text-white mx-2"> > </span>
+          <a href="/user/checkout" class="text-white" style="text-decoration: none;">Checkout</a>
+        </h5>
+      </nav>
+      <!-- Breadcrumb -->
+    </div>
+  </div>
+
+
+  <section class="bg-light py-5">
+    <div class="container">
+      <div class="row">
+        <div class="col-xl-8 col-lg-8 mb-4">
+
+          <!-- Checkout -->
+          <div class="card shadow-0 border">
+            <div class="p-4">
+              <form action="/user/placeOrder" method="POST">
+                <h5 class="card-title mb-3">Shipping address</h5> <!-- Changed to Shipping address -->
+                <div class="row">
+                  <input type="hidden" name="cartId" value="<%= cart._id %>">
+                  <div class="col-12 mb-0">
+                    <p class="mt-4 mb-0">Select address</p><br>
+                    <div class="form-outline">
+                      <% if (address.length> 0) { %>
+                        <select name="addressId" id="addressSelect" class="form-select">
+                          <% address.forEach(element=> { %>
+                            <option value="<%= element._id %>">
+                              <%= element.name %>, <%= element.address %>
+                            </option>
+                            <% }) %>
+                        </select>
+                        <% } else { %>
+                          <button class="btn btn-success">
+                            <a href="address" style="text-decoration: none; color: inherit;">Add Address</a>
+                          </button>
+                          <% } %>
+                    </div>
+
+                  </div>
+                </div>
+
+                <div class="row">
+                  <input type="hidden" name="cartId" value="<%= cart._id %>">
+                  <div class="col-12 mb-3">
+                    <p class="mt-4 mb-0">Coupons </p><br>
+                    <div class="form-outline">
+                      <% if (filteredCoupons.length> 0) { %>
+                        <select name="couponId" id="couponId" class="form-select">
+                          <option value="null">
+                            Apply No coupon
+                          </option>
+                          <% filteredCoupons.forEach(element=> { %>
+                            <option value="<%= element._id %>">
+                              <%= element.code %>
+                            </option>
+                            <% }) %>
+                        </select>
+                        <% } else { %>
+                          <select name="couponId" id="couponId" class="form-select">
+                            <option value="null">
+                              "No coupons available"
+                            </option>
+                          </select>
+                          <% } %>
+                    </div>
+
+                  </div>
+                </div>
+
+                <!-- Additional fields for shipping information can be added here -->
+
+                <div class="form-check">
+
+                </div>
+
+                <hr class="my-4" />
+
+                <h5 class="card-title mb-3">Payment method</h5>
+                <input type="hidden" name="paymentStatus" id="hiddenPaymentStatus" value="Completed">
+                <div class="row mb-3">
+                  <div class="col-lg-4 mb-3">
+                    <!-- Default checked radio -->
+                    <div class="form-check h-100 border rounded-3">
+                      <div class="p-3">
+                        <input class="form-check-input" type="radio" name="PaymentMethod" value="COD"
+                          id="flexRadioDefault1" <%=totalAmount < 1000 ? "checked" : "disabled" %>/>
+                        <label class="form-check-label" for="flexRadioDefault1">
+                          Cash On Delivery <br />
+                          <small class="text-muted">
+                            <%=totalAmount < 1000 ? "Pay when product is delivered" : "Amount too high for COD" %>
+                          </small>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-lg-4 mb-3">
+                    <!-- Default radio -->
+                    <div class="form-check h-100 border rounded-3">
+                      <div class="p-3">
+                        <input class="form-check-input" type="radio" name="PaymentMethod" value="Razor Pay"
+                          id="flexRadioDefault2" <%=totalAmount> 100 ? "" : "disabled" %>/>
+                        <label class="form-check-label" for="flexRadioDefault2">
+                          Razor Pay <br />
+                          <small class="text-muted">Avail extra offers when using bank cards </small>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-lg-4 mb-3">
+                    <!-- Default radio -->
+                    <div class="form-check h-100 border rounded-3">
+                      <div class="p-3">
+                        <input class="form-check-input" type="radio" name="PaymentMethod" value="Rishi Studio Wallet"
+                          id="flexRadioDefault3" <%=user.wallet>= totalAmount ? "" : "disabled" %> />
+                        <label class="form-check-label" for="flexRadioDefault3">
+                          Rishi Studio Wallet<br />
+                          <small class="text-muted">
+                            Your balance : <%= user.wallet %>
+                          </small> <br>
+                          <small class="text-muted">
+                            Use your amount kept with us to make this purchase !
+                          </small>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="float-end">
+                  <a href="/">
+                    <button class="btn btn-secondary shadow-0 border">Cancel</button>
+                  </a>
+                  <button class="btn btn-success shadow-0 border" type="submit">Place Order</button>
+                </div>
+            </div>
+          </div>
+          </form>
+          <!-- Checkout -->
+        </div>
+        <div class="col-xl-4 col-lg-4 d-flex justify-content-center justify-content-lg-end">
+          <div class="ms-lg-4 mt-4 mt-lg-0" style="max-width: 320px;">
+            <h6 class="mb-3">Summary</h6>
+            <div class="d-flex justify-content-between">
+              <p class="mb-2">Price:</p>
+              <h6 class="mb-2">Rs. <%= totalAmount %>
+              </h6>
+            </div>
+            <div id="DiscountElement">
+              <div class="d-flex justify-content-between">
+                <p class="mb-2 mr-2" style="display:inline;">Discount Percentage:</p>
+                <h6 class="mb-2 text-danger" style="display:inline;">0 %</h6>
+              </div>
+              <div class="d-flex justify-content-between">
+                <p class="mb-2 mr-2" style="display:inline;">Discount Amount:</p>
+                <h6 class="mb-2 text-danger" style="display:inline;">Rs. 0.00</h6>
+              </div>
+            </div>
+            <hr />
+            <div class="d-flex justify-content-between">
+              <p class="mb-2">Total price:</p>
+              <p class="mb-2 fw-bold" id="totalAmountElement">Rs. <%= totalAmount %>
+              </p>
+            </div>
+
+            <hr />
+            <h6 class="text-dark my-4">Items in cart</h6>
+
+            <% cart.products.forEach((product, index)=> { %>
+              <div class="d-flex align-items-center mb-4">
+                <div class="me-3 position-relative">
+                  <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill badge-secondary">
+                    <%= index + 1 %>
+                  </span>
+                  <img src="/<%= product.productId.images[0] %>" style="height: 96px; width: 96px;"
+                    class="img-sm rounded border" />
+                </div>
+                <div class="">
+                  <a href="/user/productDetailed/<%= product.productId._id %>" class="nav-link">
+                    <%= product.productId.name %>
+                  </a><br>
+                  <p>Quantity: <%= product.quantity %>
+                  </p>
+                  <div class="price text-muted">Total: Rs. <%= (product.productId.rate * product.quantity).toFixed(2) %>
+                  </div>
+                </div>
+              </div>
+              <% }) %>
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+  <script>
+
+    document.addEventListener('DOMContentLoaded', function () {
+      var razorpayAmount = parseInt(`<%= totalAmount %>`);
+
+      document.getElementById('couponId').addEventListener('change', async function () {
+        try {
+          const totalAmountElement = document.getElementById('totalAmountElement');
+          const DiscountElement = document.getElementById('DiscountElement');
+          const originalTotalAmount = parseInt(`<%= totalAmount %>`);
+          const couponId = this.value;
+
+          if (couponId === 'noCoupon') {
+            totalAmountElement.textContent = `Rs. ${originalTotalAmount.toFixed(2)}`;
+            DiscountElement.innerHTML = `  <div class="d-flex justify-content-between">
+                <p class="mb-2 mr-2" style="display:inline;">Discount Percentage:</p>
+                <h6 class="mb-2 text-danger" style="display:inline;">0 %</h6>
+              </div>
+              <div  class="d-flex justify-content-between">
+                <p class="mb-2 mr-2" style="display:inline;">Discount Amount:</p>
+                <h6 class="mb-2 text-danger" style="display:inline;">Rs. 0.00</h6>
+              </div>
+            </div>`
+            razorpayAmount = parseInt(originalTotalAmount);
+            return;
+          }
+
+          const response = await axios.get(`/user/getcouponData/${couponId}`);
+          const coupon = response.data;
+
+          if (coupon && coupon.discountPercentage) {
+            const discountAmount = (originalTotalAmount * coupon.discountPercentage) / 100;
+            const newTotalAmount = originalTotalAmount - discountAmount;
+
+            totalAmountElement.textContent = `Rs. ${newTotalAmount.toFixed(2)}`;
+            DiscountElement.innerHTML = ` <div class="d-flex justify-content-between">
+                <p class="mb-2 mr-2" style="display:inline;">Discount Percentage:</p>
+                <h6 class="mb-2 text-danger" style="display:inline;">${coupon.discountPercentage} %</h6>
+              </div>
+              <div  class="d-flex justify-content-between">
+                <p class="mb-2 mr-2" style="display:inline;">Discount Amount:</p>
+                <h6 class="mb-2 text-danger" style="display:inline;">Rs. ${((discountAmount / 100) * originalTotalAmount).toFixed(2)}</h6>
+              </div>
+            </div>`
+            razorpayAmount = newTotalAmount;
+          }
+
+        } catch (error) {
+          console.error('Error fetching coupon details:', error);
+          return res.status(500).send(error)
+        }
+      });
+
+      const form = document.querySelector('form[action="/user/placeOrder"]');
+      const razorpayRadio = document.getElementById('flexRadioDefault2');
+      const paymentMethods = document.querySelectorAll('input[name="PaymentMethod"]');
+
+      document.querySelector('button[type="submit"]').addEventListener('click', function (event) {
+
+        let flag = false;
+        paymentMethods.forEach((method) => {
+          if (method.checked) {
+            flag = true;
+          }
+        });
+
+        if (!flag) {
+          event.preventDefault();
+          Swal.fire({
+            icon: 'error',
+            title: 'Payment Method Required',
+            text: 'Please select a payment method before placing the order.',
+          });
+          return;
+        }
+
+        if (razorpayRadio.checked) {
+          event.preventDefault();
+
+          const options = {
+            key: "rzp_test_VsFnNZA1nNcWZT",
+            amount: razorpayAmount * 100,
+            currency: "INR",
+            name: "RISHI STUDIO",
+            description: "Food Purchased from Rishi Studio",
+            image: "/assets/img/icon.jpg",
+
+            handler: function (response) {
+              document.getElementById('hiddenPaymentStatus').value = "Completed";
+              form.submit();
+            },
+            prefill: {
+              name: "<%= user.name %>",
+              email: "<%= user.email %>",
+            },
+            theme: {
+              color: "#3399cc",
+            },
+            modal: {
+              ondismiss: function () {
+                Swal.fire({
+                  icon: 'warning',
+                  title: 'Payment Interrupted',
+                  text: 'Payment process was interrupted. Please try again.'
+                });
+              }
+            }
+          };
+
+          const rzp = new Razorpay(options);
+
+          rzp.on("payment.failed", (e) => {
+            document.getElementById('hiddenPaymentStatus').value = "Failed";
+            form.submit();
+          });
+
+          rzp.open();
+
+        } else {
+          form.submit();
+        }
+      });
+    });
+
+
+  </script>
+
+
+  <%- include('../partials/footer') %>

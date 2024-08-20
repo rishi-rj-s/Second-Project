@@ -1,0 +1,178 @@
+<%- include('../partials/userHeader') %>
+
+<div class="bg-primary">
+    <div class="container py-3">
+        <!-- Breadcrumb -->
+        <nav class="d-flex">
+            <h5 class="mb-0">
+                <a href="/" class="text-white-50" style="text-decoration: none;">Home</a>
+                <span class="text-white mx-2"> > </span>
+                <a href="/user/viewWishlist" class="text-white" style="text-decoration: none;">Wishlist</a>
+            </h5>
+        </nav>
+        <!-- Breadcrumb -->
+    </div>
+  </div>
+
+    <div class="container-fluid py-5 d-flex justify-content-center gradient-custom">
+
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-header py-3">
+                    <h4>Wishlist Items -
+                        <% if (wishList && wishList.products.length> 0) { %>
+                            <%= wishList.products.length %>
+                                <% } else { %>
+                                    0
+                                    <% } %>
+                    </h4>
+
+                </div>
+                <div class="card-body">
+                    <% if(!wishList || wishList.products.length==0) { %>
+                        <div class="row justify-content-center">
+                            <div class="col-md-8">
+                                <h2 class="text-center m-5">Your wishList is Empty</h2>
+                            </div>
+                        </div>
+
+                        <% } else { %>
+                            <% wishList.products.forEach(product=> { %>
+                                <!-- Single item -->
+                                <div class="row m-5 border border-success">
+                                    <div class="col-lg-6 col-md-12 mb-4 mb-lg-0 p-5">
+                                        <!-- Image -->
+                                        <div class="bg-image hover-overlay hover-zoom ripple rounded"
+                                            data-mdb-ripple-color="light">
+                                            <img src="/<%= product.productId.images[0] %>" class="w-100"
+                                                alt="Blue Jeans Jacket" />
+                                            <a href="#!">
+                                                <div class="mask" style="background-color: rgba(251, 251, 251, 0.2)">
+                                                </div>
+                                            </a>
+                                        </div>
+                                        <!-- Image -->
+                                    </div>
+
+                                    <div class="col-lg-6 col-md-6 mb-4 mb-lg-0 pt-5">
+                                        <!-- Data -->
+                                        <p><strong>
+                                                <%= product.productId.name %>
+                                            </strong></p>
+                                        <p>Info: <%= product.productId.description %>
+                                        </p>
+                                        <p>Rating: <%= product.productId.rating %>
+                                        </p>
+                                        <p>Availability: <%= product.productId.listing %>
+                                        </p>
+                                        <p>Category: <%= product.productId.category.name %>
+                                        </p>
+                                        <p class="m-3 p-3 d-flex justify-content-center">
+                                            <button type="button" id="delete" onclick="remove()"
+                                                data-id="<%= product.productId._id %>" data-mdb-button-init
+                                                data-mdb-ripple-init class="btn btn-primary btn-sm me-1 mb-2 w-50"
+                                                data-mdb-tooltip-init title="Remove item">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                            <button class="btn btn-primary  addToCart" onclick="addToCart()" data-id="<%= product.productId._id %>"> <i
+                                                class="me-1 fa fa-shopping-basket"></i> Add to cart </button>
+                                        </p>
+                                        <!-- Data -->
+                                    </div>
+
+                                    <!-- Price -->
+                                    <p class="text-start text-md-center">
+                                        <strong>Rs. Cost per piece - <%= (product.productId.rate)%></strong>
+                                    </p>
+                                    <!-- Price -->
+                                </div>
+                </div>
+                <!-- Single item -->
+                <% }); %>
+            </div>
+        </div>
+        <% } %>
+
+    </div>
+
+    </div>
+    </div>
+    </div>
+
+    <script>
+        async function remove() {
+
+            const button = document.getElementById('delete')
+            const id = button.getAttribute('data-id')
+
+            const response = await fetch(`/user/deleteFromWishList/${id}`, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
+
+            const result = await response.json()
+
+            if (result.message == 'deleted') {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Product Deleted!',
+                    text: 'The product has been Deleted from your Wishlist.'
+                }).then(()=>{
+                    location.reload()
+                })
+            }
+
+        }
+
+
+        async function addToCart() {
+        try {
+          const button = document.querySelector(".addToCart");
+        //   const quantity = document.querySelector('.quantity').value;
+          const quantity = 1
+          const productId = button.getAttribute('data-id');
+          const response = await fetch(`/user/addToCart?qty=${quantity}`, {
+            method: "POST", headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ id: productId })
+          })
+
+          const data = await response.json();
+
+          if (data.message === "success") {
+            Swal.fire({
+              icon: 'success',
+              title: 'Product Added!',
+              text: 'The product has been added to your cart.'
+            });
+            remove()
+          } else if (data.message === "excess") {
+            Swal.fire({
+              icon: 'Only 5 quantity allowed, 5 quantity is in cart',
+              title: 'Quantity Limit Reached',
+              text: 'You have reached the maximum quantity for this product.'
+            });
+          } else {
+            // Handle other potential error messages from the server
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: data.message || 'An error occurred while adding the product to your cart.'
+            });
+          }
+        } catch (error) {
+          console.error('Fetch Error:', error);
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'An error occurred while processing your request.'
+          })
+        }
+      }
+
+    </script>
+
+    <%- include('../partials/footer') %>
